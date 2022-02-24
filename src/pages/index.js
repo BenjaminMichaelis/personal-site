@@ -9,8 +9,8 @@ const IndexPage = () => {
   return (
     <Layout>
     <SEO title="Home" />
-    <h1>Hi people</h1>
-    <p>Now go build something great.</p>
+    <h1 class="title">Benjamin Michaelis</h1>
+    <p>I'm a full-time software engineering student based in Pullman, Washington at WSU-Pullman and part-time adventure seeker/traveler. In my free time I love the outdoors, being active, as well as connecting with friends and family.</p>
   </Layout>
   )
 }
