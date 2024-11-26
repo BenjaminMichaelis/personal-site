@@ -19,7 +19,7 @@
     "@mdi/font": "7.4.47",
     "@vuelidate/core": "^2.0.3",
     "@vuelidate/validators": "^2.0.4",
-    "coalesce-vue": "4.0.0-alpha.20230303.3",
+    "coalesce-vue": "5.2.1",
     "coalesce-vue-vuetify3": "4.0.0-alpha.20230303.3",
     "core-js": "^3.39.0",
     "typeface-roboto": "1.1.13",
