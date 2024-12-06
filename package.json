@@ -46,7 +46,7 @@
     "prettier": "^2.8.8",
     "sass": "^1.81.0",
     "typescript": "~5.7.2",
-    "vite": "^4.5.3",
+    "vite": "^6.0.3",
     "vite-plugin-vuetify": "^1.0.0-alpha.12",
     "vitest": "^0.34.6",
     "vue-tsc": "^2.1.10"
