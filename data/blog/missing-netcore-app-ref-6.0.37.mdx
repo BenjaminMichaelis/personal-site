@@ -1,0 +1,38 @@
+---
+title: 'Microsoft.NETCore.App.Ref 6.0.37 missing'
+date: '2025-03-19'
+tags: ['.NET', 'github-actions']
+draft: false
+authors: ['default']
+layout: PostLayout
+---
+
+## Introduction
+
+Recently, I encountered an issue with a pipeline for the source code to [Essential C#](essentialcsharp.com) that suddenly started failing due to some unit tests. The problem was that the `Microsoft.NETCore.App.Ref` NuGet package, specifically version 6.0.37, wasn't found. This seemed like a minor issue at first, but it turned out to be more interesting due to the nature of the failing unit test.
+
+## The Issue
+
+I knew that the test class - our [compiler assert class](https://github.com/IntelliTect/EssentialCSharp/blob/30964ce86883effd9a2a2cc86315a8d52784e40a/src/Shared/Tests/CompilerAssert.cs) dynamically pulls the appropriate `Microsoft.NETCore.App.Ref` NuGet package based on the runtime that is executing the code.
+
+The test that was failing was a `CompilerAssert` test that is a bit of a meta test - it runs some of our code and verifies that the expected C# Compiler warnings/errors are present and not others. This is a great test to have - as it helps us ensure that the code we are providing in the book is up to date with the current C# compiler warnings and errors.
+
+## The Investigation
+
+What stood out about this test is that it was only failing on windows in our GitHub actions pipeline. Running `dotnet --info` on the windows runner showed that the .NET runtime `6.0.37` was in fact installed.
+
+![dotnet info on GitHub actions runner](/static/images/blog/windows-dotnet-info.png)
+
+Digging further, the [.NET support policy for .NET 6](https://dotnet.microsoft.com/en-us/platform/support/policy/dotnet-core#lifecycle) clearly shows that .NET 6.0 ended support on November 12, 2024, and that the last patch was `6.0.36`. This was a bit of a head scratcher - how was the `6.0.37` package being pulled in? It also was not available on the [.NET downloads page](https://dotnet.microsoft.com/download/dotnet/6.0) - so where was it coming from, why was it only failing on windows, and wherever it was coming from, why is there not an associated .NuGet package?
+
+![.NET 6.0 support policy is out of support](/static/images/blog/net6SupportPolicy.png)
+
+The next step was to figure out where the .NET runtime was coming from. Knowing that we use `windows-latest` as the selected runner image, I found that this points to Windows Server 2022, as seen in the [GitHub Actions runner documentation](https://github.com/actions/runner-images/tree/db5e0167f47feefd6c8e0ac4908d4110bd1a6c64?tab=readme-ov-file#available-images).
+
+This allowed me to find the final piece - which is hidden in this Azure Compute Blog post about the [.NET 6.0 getting extended support on windows server through Azure Marketplace](https://techcommunity.microsoft.com/blog/azurecompute/breaking-change-for-window-server-2022-image-users-with-net-6/4262423). While .NET 6.0 has ended support, on only Windows Server 2022 (another specific point) the .NET 6.0 runtime has been extended to be supported through the Azure Marketplace until May 13, 2025. This is why the .NET 6.0.37 runtime was available on the windows runner, but not on the .NET downloads page - and also why the .NuGet package was not available, as it was not a public release.
+
+## The Resolution
+
+I ended up patching this with [PR 798](https://github.com/IntelliTect/EssentialCSharp/pull/798) by pinning the version of the NuGet package to use `6.0.36` in the `CompilerAssert` test when it sees the .NET 6.0 runtime since we know that we won't be getting any newer NuGet packages. I could have also resolved this by moving off of Windows Server 2022, but with Windows Server 2025 being in beta currently, decided not to go with this in case this had unexpected side effects. This was a temporary fix, but it allowed the pipeline to pass. In the future, I plan to drop support for .NET 6.0 altogether as we generally only support the currently supported versions of .NET.
+
+This was an interesting issue to debug, as it required a bit of digging to figure out where the .NET runtime was coming from and why the NuGet package was not available. It was a good reminder to always check the support policy for the runtime you are using and to be aware of any extended support that may be available through other channels. As a bonus, it was a fun exercise in digging into the root cause of an issue - and not just blindly patching the symptom.
