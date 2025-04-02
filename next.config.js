@@ -5,15 +5,17 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 })
 
 // You might need to insert additional domains in script-src if you are using external services
+// todo: get rid of 'unsafe-eval' and 'unsafe-inline' in production by using a proper build setup
+// https://content-security-policy.com/unsafe-inline/
 const ContentSecurityPolicy = `
   default-src 'self';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' giscus.app analytics.google.com;
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' giscus.app analytics.google.com google-analytics.com googletagmanager.com www.googletagmanager.com clarity.ms www.clarity.ms;
   style-src 'self' 'unsafe-inline';
   img-src * blob: data:;
   media-src *.s3.amazonaws.com;
   connect-src *;
   font-src 'self';
-  frame-src giscus.app
+  frame-src giscus.app;
 `
 
 const securityHeaders = [

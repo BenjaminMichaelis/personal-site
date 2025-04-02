@@ -11,15 +11,15 @@ import Footer from '@/components/Footer'
 import siteMetadata from '@/data/siteMetadata'
 import { ThemeProviders } from './theme-providers'
 import { Metadata } from 'next'
-import Clarity from '@microsoft/clarity'
+import Script from 'next/script'
+import { SpeedInsights } from '@vercel/speed-insights/next'
+import { Analytics as VercelAnalytics } from '@vercel/analytics/react'
 
 const space_grotesk = Space_Grotesk({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-space-grotesk',
 })
-
-Clarity.init('qsks5sbq17')
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteMetadata.siteUrl),
@@ -70,28 +70,32 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${space_grotesk.variable} scroll-smooth`}
       suppressHydrationWarning
     >
-      <link
-        rel="icon"
-        type="image/png"
-        href={`${basePath}/static/favicons/favicon-96x96.png`}
-        sizes="96x96"
-      />
-      <link rel="icon" type="image/svg+xml" href={`${basePath}/static/favicons/favicon.svg`} />
-      <link rel="shortcut icon" href={`${basePath}/static/favicons/favicon.ico`} />
-      <link
-        rel="apple-touch-icon"
-        sizes="180x180"
-        href={`${basePath}/static/favicons/apple-touch-icon.png`}
-      />
-      <meta name="apple-mobile-web-app-title" content="BMichaelis" />
-      <link rel="manifest" href={`${basePath}/static/favicons/site.webmanifest`} />
-      <meta name="msapplication-TileColor" content="#000000" />
-      <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fff" />
-      <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
-      <link rel="alternate" type="application/rss+xml" href={`${basePath}/feed.xml`} />
+      <head>
+        <link
+          rel="icon"
+          type="image/png"
+          href={`${basePath}/static/favicons/favicon-96x96.png`}
+          sizes="96x96"
+        />
+        <link rel="icon" type="image/svg+xml" href={`${basePath}/static/favicons/favicon.svg`} />
+        <link rel="shortcut icon" href={`${basePath}/static/favicons/favicon.ico`} />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href={`${basePath}/static/favicons/apple-touch-icon.png`}
+        />
+        <meta name="apple-mobile-web-app-title" content="BMichaelis" />
+        <link rel="manifest" href={`${basePath}/static/favicons/site.webmanifest`} />
+        <meta name="msapplication-TileColor" content="#000000" />
+        <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fff" />
+        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
+        <link rel="alternate" type="application/rss+xml" href={`${basePath}/feed.xml`} />
+      </head>
       <body className="bg-white pl-[calc(100vw-100%)] text-black antialiased dark:bg-gray-950 dark:text-white">
         <ThemeProviders>
           <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
+          <SpeedInsights />
+          <VercelAnalytics />
           <SectionContainer>
             <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
               <Header />
@@ -100,6 +104,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Footer />
           </SectionContainer>
         </ThemeProviders>
+        <Script id="clarity-script" strategy="afterInteractive">
+          {`
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "${process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID}");
+          `}
+        </Script>
       </body>
     </html>
   )
