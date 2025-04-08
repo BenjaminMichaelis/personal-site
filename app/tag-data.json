@@ -1,7 +1,7 @@
 {
-  "personal": 1,
   "net": 1,
   "github-actions": 1,
   "nuget": 1,
-  "debugging": 1
+  "debugging": 1,
+  "personal": 1
 }

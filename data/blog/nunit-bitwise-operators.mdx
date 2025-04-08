@@ -1,0 +1,40 @@
+---
+title: 'Nint and Nunit are bitwise operators'
+date: '2025-04-04'
+tags: ['.NET', 'C#']
+draft: true
+authors: ['default']
+layout: PostLayout
+---
+
+Recently while working on [Essential C#](essentialcsharp.com) I got an issue posted suggesting that `nint` and `nuint` should be included in our list of unary (bitwise operators) in the book (https://github.com/IntelliTect/EssentialCSharp/issues/622).
+
+I went and checked the Microsoft docs to validate this, but didn't see anything confirming this information in the documentation. This became a question now that I needed to get to the source of, did Microsoft have an error in their documentation or was this suggestion just incorrect?
+
+I knew at this point I had to go to the source; what makes something a bitwise operator, or better phrased, what makes something compatible with bitwise operations in C#?
+
+I began by writing a simple example.
+
+```csharp
+nuint a = 0b_0000_1111_0000_1111_0000_1111_0000_1100;
+nuint b = ~a;
+```
+
+I then used sharplab (https://sharplab.io/#v2:CYLg1APgAgTAjAWAFDIHYFcCWqAuACAQzwF48AGAIwH0zayq5G4a6GmXa3GP7HaBuNFlx4KJPAD8C/IA) to quickly look at the simple decompiled code to see if this would reveal any secrets as decompiled code does. While I find decompiled code isn't always entirely forthcoming with the entire picture of what is actually happening, it does sometimes give a quick way to get pointed in a good direction. It did show that the code worked for `nuint` and `nint` of using a bitwise operator, but didn't confirm to me that this was the end of the journey.
+I began at `System.UIntPtr` and `System.IntPtr` - as these are the backing types for `nuint` and `nint` the same way that `int` is backed by `System.Int32`. Looking further into the the language reference proposals (https://learn.microsoft.com/dotnet/csharp/language-reference/proposals/csharp-9.0/native-integers?WT.mc_id=8B97120A00B57354#constants), I stumbled on this block discussing constant folding and specifically says that "Constant folding operations are evaluated with Int32 and UInt32 operands rather than native ints for consistent behavior regardless of compiler platform." - and since we know nuint and nint are native ints, now it is a question of do `nuint` and `nint` truly have the bitwise operators defined.
+
+After discussing with Kevin Bost - a coworker and Microsoft MVP, it was time to jump off the deep end into the C# source code (something that having someone like Kevin when diving in is very helpful).
+
+Looking at one of these types, lets say `UIntPtr` in the source code (https://source.dot.net/#System.Private.CoreLib/src/libraries/System.Private.CoreLib/src/System/UIntPtr.cs,33) we can begin to walk the code tree to see if these have the operator defined. 
+
+We can quickly walk up the tree of
+
+- [IBinaryInteger.cs](https://source.dot.net/#System.Private.CoreLib/src/libraries/System.Private.CoreLib/src/System/Numerics/IBinaryInteger.cs,9)
+- [IBinaryNumber.cs](https://source.dot.net/#System.Private.CoreLib/src/libraries/System.Private.CoreLib/src/System/Numerics/IBinaryNumber.cs,9)
+- [IBitwiseOperators.cs](https://source.dot.net/#System.Private.CoreLib/src/libraries/System.Private.CoreLib/src/System/Numerics/IBitwiseOperators.cs,34)
+
+We can walk this same tree for `nint` as well.
+
+Which tells us that yes, in fact `nint` and `nuint` support bitwise operations.
+
+Kevin had a good reminder that there is one thing to watch out for with some of these "special" types. You can see implementations in the BCL which are good, but there is always a chance that the compiler/runtime optimizes them to something different in different cases, so in a case like in the interfaces we just looked at, because they are defined as abstract, the compiler/runtime could do some hidden optimizations in some cases.

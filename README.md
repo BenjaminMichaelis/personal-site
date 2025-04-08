@@ -1,6 +1,6 @@
 # Personal-Site
 
 ideas:
-- [ ] NUnit/etc explanation
+- [x] NUnit/etc explanation - the microsoft docs changes
 - [x] 6.0.37 patch on runner but not otherwise
-- [ ] file systems
+- [ ] file systems - docker stuff
