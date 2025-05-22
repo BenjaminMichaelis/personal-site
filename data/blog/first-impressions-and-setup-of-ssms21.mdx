@@ -1,0 +1,41 @@
+---
+title: 'First Impressions and Setup of SSMS 21 for Copilot'
+date: '2025-05-21'
+tags: ['SSMS', 'Copilot']
+draft: false
+authors: ['default']
+layout: PostLayout
+---
+
+**TL;DR:** To set up Copilot in SSMS 21, use your Azure OpenAI endpoint, deployment name, and API key. If SSMS crashes after setup, just restart it.
+
+# Setting up SSMS 21 for Copilot
+
+Microsoft recently released SQL Server 2025 Preview and SSMS 21, which now features Copilot integration for generating SQL queries and code snippets directly in SSMS.
+
+## Quick Setup Notes
+
+- SSMS 21 does not open .ssmssln files from SSMS 20 directly. See this [Developer Community post](https://developercommunity.microsoft.com/t/SSMS-21-Does-Not-Support-Opening-SSMSSLN/10874993) for workarounds.
+- During Copilot setup, I encountered a bug: backspace and Ctrl+V didn't work in the Copilot prompt—they affected the SQL canvas instead. Using the mouse to paste or edit worked as a workaround. [More info](https://developercommunity.microsoft.com/t/Entering-in-information-for-copilot-does/10908362)
+- After entering the correct Copilot values, SSMS crashed, but restarting fixed it.
+
+## Copilot Initialization: What Values to Use?
+
+The Copilot prompt asks for:
+
+- **Azure OpenAI Endpoint**: The base URL from your Azure OpenAI resource (e.g., `https://{your-endpoint}.openai.azure.com/`)
+- **Azure OpenAI Deployment**: The deployment name you created (e.g., `gpt-4.1`)
+- **Azure OpenAI API Key**: The key from your Azure OpenAI resource
+
+I was initially confused by the term "deployment" - it refers to the model deployment name in your Azure OpenAI resource, not the target endpoint from Azure AI Foundry.
+
+![Target Endpoint and Key from Azure AI Foundry](/static/images/blog/first-impressions-and-setup-of-ssms21/TargetEndpointAndKey.png)
+
+Once I used the correct values, Copilot worked as expected. Hope this helps anyone else setting up SSMS 21 with Copilot!
+
+![Filled out Prompt](/static/images/blog/first-impressions-and-setup-of-ssms21/CompletedPrompt.png)
+
+## Other First Impressions after Day 1
+
+- The new UI is a bit different, but I like it. It feels more modern and responsive.
+- When connecting to an Azure SQL Database behind a firewall that uses your client IP address, there isn't a quick way to add your IP address to the firewall rules from SSMS 21 like there was in SSMS 20. You have to go to the Azure portal and add it there. This is a bit of a pain, but not a dealbreaker (I've been just using SSMS 20 to add the IP address quickly for now).
