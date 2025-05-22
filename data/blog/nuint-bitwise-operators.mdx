@@ -1,0 +1,97 @@
+---
+title: 'Nint and Nuint are bitwise operators'
+date: '2025-04-04'
+tags: ['.NET', 'C#']
+draft: true
+authors: ['default']
+layout: PostLayout
+---
+
+# Nint and Nuint: Bitwise Operators in C#
+
+Recently while working on [Essential C#](essentialcsharp.com) I got an issue posted suggesting that `nint` and `nuint` should be included in our list of unary (bitwise operators) in the book ([GitHub Issue #622](https://github.com/IntelliTect/EssentialCSharp/issues/622)).
+ 
+I went and checked the Microsoft docs to validate this, but didn't see anything confirming this information in the documentation on bitwise and shift operators. This became a question now that I needed to get to the source of: did Microsoft have an error in their documentation or was this suggestion just incorrect?
+
+I knew at this point I had to go to the source; what makes something a bitwise operator, or better phrased, what makes something compatible with bitwise operations in C#?
+
+### A Simple Example
+
+```csharp
+nuint a = 0b_0000_1111_0000_1111_0000_1111_0000_1100;
+nuint b = ~a;
+```
+
+### What Does the IL Say?
+
+To really understand what’s happening, let’s look at the IL (Intermediate Language) generated for this code (in Debug mode):
+
+```il
+.locals init (
+    [0] native uint a,
+    [1] native uint b
+)
+
+IL_0000: ldc.i4 252645132
+IL_0005: conv.i
+IL_0006: stloc.0
+IL_0007: ldloc.0
+IL_0008: not
+IL_0009: stloc.1
+```
+
+- `native uint` shows that the variables are truly native-sized unsigned integers.
+- The `not` instruction is the bitwise NOT operator, applied directly to the native uint.
+
+> **Tip:** If you want to see how C# operators are actually implemented in IL in this case I am using Debug mode. In Release mode, the compiler may optimize away unused variables and operations, making it harder to see the real mapping between C# and IL, and in this case it got rid of the variable all together since they were unused..
+
+I then used [Sharplab](https://sharplab.io/#v2:CYLg1APgAgTAjAWAFDIHYFcCWqAuACAQzwF48AGAIwH0zayq5G4a6GmXa3GP7HaBuNFlx4KJPAD8C/IA) to quickly look at the simple decompiled code to see if this would reveal any secrets as decompiled code does. While I find decompiled code isn't always entirely forthcoming with the entire picture of what is actually happening, it does sometimes give a quick way to get pointed in a good direction. It did show that the code worked for `nuint` and `nint` of using a bitwise operator, but didn't confirm to me that this was the end of the journey.
+
+### Digging into the .NET Source
+
+I began at `System.UIntPtr` and `System.IntPtr` - as these are the backing types for `nuint` and `nint` the same way that `int` is backed by `System.Int32`. Looking further into the language reference proposals ([C# 9.0 native integers proposal](https://learn.microsoft.com/dotnet/csharp/language-reference/proposals/csharp-9.0/native-integers?WT.mc_id=8B97120A00B57354#constants)), I stumbled on this block discussing constant folding and specifically says that "Constant folding operations are evaluated with Int32 and UInt32 operands rather than native ints for consistent behavior regardless of compiler platform." - and since we know nuint and nint are native ints, now it is a question of do `nuint` and `nint` truly have the bitwise operators defined.
+
+After discussing with Kevin Bost - a coworker and Microsoft MVP, it was time to jump off the deep end into the C# source code (something that having someone like Kevin when diving in is very helpful).
+
+### Interface Hierarchy and Operator Support
+
+Looking at one of these types, lets say `UIntPtr` in the source code ([UIntPtr.cs](https://source.dot.net/#System.Private.CoreLib/src/libraries/System.Private.CoreLib/src/System/UIntPtr.cs,33)) we can begin to walk the code tree to see if these have the operator defined.
+
+We can quickly walk up the tree of:
+
+- [IBinaryInteger.cs](https://source.dot.net/#System.Private.CoreLib/src/libraries/System.Private.CoreLib/src/System/Numerics/IBinaryInteger.cs,9)
+- [IBinaryNumber.cs](https://source.dot.net/#System.Private.CoreLib/src/libraries/System.Private.CoreLib/src/System/Numerics/IBinaryNumber.cs,9)
+- [IBitwiseOperators.cs](https://source.dot.net/#System.Private.CoreLib/src/libraries/System.Private.CoreLib/src/System/Numerics/IBitwiseOperators.cs,34)
+
+#### How Does the Interface Hierarchy Work?
+
+The support for bitwise operators on `nint` and `nuint` comes from a chain of interfaces and default implementations in .NET:
+
+```
+UIntPtr / IntPtr
+   └── implements IBinaryInteger<T>
+         └── inherits IBinaryNumber<T>
+               └── inherits IBitwiseOperators<T, T, T>
+```
+
+- [`UIntPtr`](https://source.dot.net/#System.Private.CoreLib/src/libraries/System.Private.CoreLib/src/System/UIntPtr.cs,501) and [`IntPtr`](https://source.dot.net/#System.Private.CoreLib/src/libraries/System.Private.CoreLib/src/System/IntPtr.cs,5ca220e076f502c9) (the underlying types for `nuint` and `nint`) implement `IBinaryInteger<T>`.
+- `IBinaryInteger<T>` inherits from `IBinaryNumber<T>`, which in turn inherits from `IBitwiseOperators<T, T, T>`.
+- `IBitwiseOperators` defines the static bitwise operator methods (like `~`, `&`, `|`, `^`).
+- The actual operator logic is provided via default interface implementations, so the types get bitwise operator support “for free” by implementing the interface.
+
+This means that even if you don’t see an explicit `operator ~` method in `UIntPtr` or `IntPtr`, the operator is still available because of this interface chain.
+
+Which tells us that yes, in fact `nint` and `nuint` support bitwise operations.
+
+### Special Types and Edge Cases
+
+Kevin had a good reminder that there is one thing to watch out for with some of these "special" types. Because the operator methods in `IBitwiseOperators` are abstract, the default interface implementation is actually provided in types like `UIntPtr` (part of the BCL). These implementations are generally reliable, but there is always a chance that the compiler or runtime optimizes them differently in certain cases. This is similar to how lifted operators work with `Nullable<T>`—the compiler can generate special logic for these cases, which may not always match the direct implementation you see in the BCL.
+
+### Conclusion
+
+After this investigation, I realized that the Microsoft documentation did not mention `nint` and `nuint` as supporting bitwise operators, even though the language and runtime do support them. To help clarify this for others, I submitted a pull request to the official docs to add this information:
+
+- https://github.com/dotnet/docs/pull/44973
+- [Fixed documentation](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/bitwise-and-shift-operators?WT.mc_id=8B97120A00B57354)
+
+This update helps ensure that future readers and developers are aware that native-sized integers (`nint` and `nuint`) do support bitwise operations, and that the omission in the docs was simply an oversight. If you ever find something missing or unclear in the documentation, consider submitting a PR—it's a great way to help the community!
