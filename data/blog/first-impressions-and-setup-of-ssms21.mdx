@@ -31,11 +31,15 @@ I was initially confused by the term "deployment" - it refers to the model deplo
 
 ![Target Endpoint and Key from Azure AI Foundry](/static/images/blog/first-impressions-and-setup-of-ssms21/TargetEndpointAndKey.png)
 
-Once I used the correct values, Copilot worked as expected. Hope this helps anyone else setting up SSMS 21 with Copilot!
+Once I used the correct values, Copilot worked as expected. In hindsight, the values make sense for the fields, but maybe there is some small UI improvement that can be done to help initially lead you along this path. Hope this helps anyone else setting up SSMS 21 with Copilot!
 
 ![Filled out Prompt](/static/images/blog/first-impressions-and-setup-of-ssms21/CompletedPrompt.png)
 
-## Other First Impressions after Day 1
+## Other First Impressions after the first few days of using SSMS 21
 
-- The new UI is a bit different, but I like it. It feels more modern and responsive.
-- When connecting to an Azure SQL Database behind a firewall that uses your client IP address, there isn't a quick way to add your IP address to the firewall rules from SSMS 21 like there was in SSMS 20. You have to go to the Azure portal and add it there. This is a bit of a pain, but not a dealbreaker (I've been just using SSMS 20 to add the IP address quickly for now).
+- The new UI is a bit different, but I like it. It feels more modern and responsive in it's new VS2022 style.
+- When connecting to an Azure SQL Database behind a firewall that uses your client IP address, there isn't a quick way to add your IP address to the firewall rules from SSMS 21 like there was in SSMS 20. For now, I use SSMS 20 to quickly add my IP, then switch back to SSMS 21.
+    - Update: A workaround is to use the "classic" connection dialog, which allows you to add your IP address to the firewall rules. This is a bit of a hassle, but it works. [Known SSMS Issues](https://learn.microsoft.com/ssms/known-issues?WT.mc_id=8B97120A00B57354) and a [feedback item](https://developercommunity.microsoft.com/t/Modern-Connection-dialog-cannot-add-fire/10899761?sort=recent&q=firewall) on this.
+- Not being able to open .ssmssln files from SSMS 20 without a [workaround](https://developercommunity.microsoft.com/t/SSMS-21-Does-Not-Support-Opening-SSMSSLN/10874993) even if you had to save then as a .sln file is a bit annoying. I hope this gets fixed in the future.
+- Being able to manage SSMS through the VS Installer is nice as it makes it easier to keep up to date with the latest version.
+- I like the concept of being able to not only write but optimize queries with Copilot. I am excited to see how this works in practice.
