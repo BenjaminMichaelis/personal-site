@@ -1,5 +1,8 @@
 {
-  "net": 1,
+  "ssms": 1,
+  "copilot": 1,
+  "net": 2,
+  "c": 1,
   "github-actions": 1,
   "nuget": 1,
   "debugging": 1,

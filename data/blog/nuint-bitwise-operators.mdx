@@ -10,17 +10,21 @@ layout: PostLayout
 # How to Prove Bitwise Operator Support for nint and nuint in C#
 
 Recently while working on [Essential C#](essentialcsharp.com) I got an issue posted suggesting that `nint` and `nuint` should be included in our list of unary (bitwise operators) in the book ([GitHub Issue #622](https://github.com/IntelliTect/EssentialCSharp/issues/622)).
- 
+
 I went and checked the Microsoft docs to validate this, but didn't see anything confirming this information in the documentation on bitwise and shift operators. This became a question now that I needed to get to the source of: did Microsoft have an error in their documentation or was this suggestion just incorrect?
 
 I knew at this point I had to go to the source; what makes something a bitwise operator, or better phrased, what makes something compatible with bitwise operations in C#?
 
 ### A Simple Example
 
+To start, I wrote a simple code snippet to test the bitwise NOT operator (`~`) on `nuint`:
+
 ```csharp
 nuint a = 0b_0000_1111_0000_1111_0000_1111_0000_1100;
 nuint b = ~a;
 ```
+
+To learn more about bitwise operators in C#, you can check out the material on [Essential C#](https://essentialcsharp.com/bitwise-operators#bitwise-operators).
 
 ### What Does the IL Say?
 

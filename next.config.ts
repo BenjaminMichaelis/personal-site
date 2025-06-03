@@ -1,8 +1,4 @@
-const { withContentlayer } = require('next-contentlayer2')
-
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-})
+import { withContentlayer } from 'next-contentlayer2'
 
 // You might need to insert additional domains in script-src if you are using external services
 // todo: get rid of 'unsafe-eval' and 'unsafe-inline' in production by using a proper build setup
@@ -60,43 +56,52 @@ const output = process.env.EXPORT ? 'export' : undefined
 const basePath = process.env.BASE_PATH || undefined
 const unoptimized = process.env.UNOPTIMIZED ? true : undefined
 
-/**
- * @type {import('next/dist/next-server/server/config').NextConfig}
- **/
-module.exports = () => {
-  const plugins = [withContentlayer, withBundleAnalyzer]
-  return plugins.reduce((acc, next) => next(acc), {
-    output,
-    basePath,
-    reactStrictMode: true,
-    pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
-    eslint: {
-      dirs: ['app', 'components', 'layouts', 'scripts'],
-    },
-    images: {
-      remotePatterns: [
-        {
-          protocol: 'https',
-          hostname: 'picsum.photos',
-        },
-      ],
-      unoptimized,
-    },
-    async headers() {
-      return [
-        {
-          source: '/(.*)',
-          headers: securityHeaders,
-        },
-      ]
-    },
-    webpack: (config, options) => {
-      config.module.rules.push({
-        test: /\.svg$/,
-        use: ['@svgr/webpack'],
-      })
+import type { NextConfig } from 'next'
 
-      return config
-    },
-  })
+const nextConfig: NextConfig = {
+  output,
+  basePath,
+  reactStrictMode: true,
+  trailingSlash: false,
+  pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
+  eslint: {
+    dirs: ['app', 'components', 'layouts', 'scripts'],
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+      },
+    ],
+    unoptimized,
+  },
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: securityHeaders,
+      },
+    ]
+  },
+  webpack: (config, options) => {
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ['@svgr/webpack'],
+    })
+    return config
+  },
 }
+
+const plugins = [withContentlayer]
+
+const getConfig = async () => {
+  const { default: withBundleAnalyzer } = await import('@next/bundle-analyzer')
+  const analyzer = withBundleAnalyzer({
+    enabled: process.env.ANALYZE === 'true',
+  })
+  const allPlugins = [...plugins, analyzer]
+  return allPlugins.reduce((acc, next) => next(acc), nextConfig)
+}
+
+export default getConfig
