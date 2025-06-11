@@ -25,6 +25,7 @@ import rehypePresetMinify from 'rehype-preset-minify'
 import siteMetadata from './data/siteMetadata'
 import { allCoreContent, sortPosts } from 'pliny/utils/contentlayer.js'
 import prettier from 'prettier'
+import { resolveLastmod } from './utils/resolveLastmod'
 
 const root = process.cwd()
 const isProduction = process.env.NODE_ENV === 'production'
@@ -57,6 +58,7 @@ const computedFields: ComputedFields = {
     resolve: (doc) => doc._raw.sourceFilePath,
   },
   toc: { type: 'json', resolve: (doc) => extractTocHeadings(doc.body.raw) },
+  lastmodComputed: { type: 'string', resolve: (doc) => resolveLastmod(doc) },
 }
 
 /**
@@ -119,7 +121,7 @@ export const Blog = defineDocumentType(() => ({
         '@type': 'BlogPosting',
         headline: doc.title,
         datePublished: doc.date,
-        dateModified: doc.lastmod || doc.date,
+        dateModified: resolveLastmod(doc),
         description: doc.summary,
         image: doc.images ? doc.images[0] : siteMetadata.socialBanner,
         url: `${siteMetadata.siteUrl}/${doc._raw.flattenedPath}`,
