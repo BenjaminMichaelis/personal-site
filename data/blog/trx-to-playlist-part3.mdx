@@ -1,0 +1,123 @@
+---
+title: 'From TRX to Playlist: Building a Dev-Friendly Test Toolchain – Part 3: From Libraries to Dev Tools: Building the CLI and GitHub Action'
+date: '2025-06-26'
+tags: ['.NET', 'Testing', 'CI/CD', 'Visual Studio', 'DevTools']
+draft: false
+authors: ['default']
+layout: PostLayout
+series: ['From TRX to Playlist: Building a Dev-Friendly Test Toolchain']
+---
+
+# From TRX to Playlist: Building a Dev-Friendly Test Toolchain
+
+## Part 3: From Libraries to Dev Tools—Building the CLI and GitHub Action
+
+In [Part 1](./trx-to-playlist-part1), I described the motivation behind this project. [Part 2](./trx-to-playlist-part2) was a deep dive into parsing and format quirks. Now, let’s bring it all together: turning libraries into practical developer tools.
+
+---
+
+## Building the CLI with System.CommandLine
+
+I wanted to make this tool as easy as possible for anyone to use. That meant a **CLI** with clear arguments and output.
+
+- Built on [System.CommandLine](https://learn.microsoft.com/en-us/dotnet/standard/commandline/).
+- Supports converting one or _many_ `.trx` files at once (glob patterns).
+- Allows filtering by test outcome (`Failed`, `Passed`, `Inconclusive`, etc.).
+- Lets you specify output directory and file names.
+
+Example usage:
+
+```bash
+# Convert all failed tests from a TRX file to a playlist
+trx-to-vsplaylist convert ./TestResults/results.trx --outcome Failed
+
+# Filter for multiple outcomes
+trx-to-vsplaylist convert ./TestResults/results.trx --outcome Failed --outcome NotExecuted
+
+# Batch convert all .trx files in a directory
+trx-to-vsplaylist convert ./TestResults/*.trx --outcome Failed
+```
+
+Install it with:
+
+```bash
+dotnet tool install --global trx-to-vsplaylist
+```
+
+---
+
+## Creating the GitHub Action and Integrating It into Workflows
+
+The next step: **automation**. I wanted anyone to be able to drop this into their CI pipeline and get playlist files as artifacts.
+
+The [GitHub Action](https://github.com/BenjaminMichaelis/trx-to-vsplaylist) wraps the global tool. Just add this to your workflow:
+
+```yaml
+- name: Convert TRX to Playlist
+  uses: BenjaminMichaelis/trx-to-vsplaylist@v1
+  with:
+    trx-file-path: './TestResults/results.trx'
+    test-outcomes: 'Failed'
+    artifact-name: 'failing-tests-playlist'
+```
+
+It’ll convert any matching `.trx` files, generate the playlists, and upload them as artifacts. Download the `.playlist` file, open it in Visual Studio, and get right to fixing your tests.
+
+---
+
+## Testing the Action (and Itself!)
+
+A good dev tool tests itself. I wrote comprehensive [workflow tests](https://github.com/BenjaminMichaelis/trx-to-vsplaylist/blob/main/.github/workflows/test.yml) that:
+
+- Generate various sample `.trx` files for all supported outcomes.
+- Run the action with different arguments (output dirs, filters, skip-empty, etc.).
+- Check that the resulting `.playlist` files are present, non-empty, and contain the expected test names.
+- Even test error conditions (missing files, empty results).
+
+This gave me end-to-end confidence that the tool works in real CI environments.
+
+---
+
+## Debugging Visual Studio Compatibility Issues
+
+At one point, my generated playlist files didn’t work in Visual Studio—they imported, but no tests appeared. After some investigation, I realized the problem: **Visual Studio needs fully qualified test names**, but some `.trx` files (especially from older test runners) only include the bare method name, or changed how class names are qualified.
+
+Solution:
+
+- Always combine class and method names for the playlist.
+- Test with both legacy and modern `.trx` files.
+
+Lesson: Always test your output in the _real_ target environment!
+
+---
+
+## Lessons Learned: Testing, AI Pair Programming, Dev UX
+
+- **Test at every layer.** I wrote unit tests for the parsers, integration tests for round-tripping files, and workflow tests for the action.
+- **AI pair programming works... with constraints.** Copilot and Claude were great for quick scaffolding, but always write failing tests to keep the AI (and yourself) on track.
+- **Developer UX matters.** Clear error messages, flexible CLI options, and robust automation make tools like this a joy to use.
+
+---
+
+## What’s Next and How You Can Contribute
+
+This toolchain is open source and ready for you to use, adapt, or extend!  
+Find everything at [github.com/BenjaminMichaelis/VS.TestPlaylistTools](https://github.com/BenjaminMichaelis/VS.TestPlaylistTools)
+
+- [TrxLib](https://www.nuget.org/packages/TrxLib)
+- [VSTestPlaylistTools](https://www.nuget.org/packages/VSTestPlaylistTools)
+- [trx-to-vsplaylist](https://www.nuget.org/packages/trx-to-vsplaylist)
+
+Pull requests and suggestions are welcome. If you use the tool, let me know what workflow improvements you’d like to see!
+
+---
+
+## Series Recap
+
+1. [Part 1: Why I Built a TRX to VS Playlist Converter](./trx-to-playlist-part1)
+2. [Part 2: Parsing the Playlist and TRX Files](./trx-to-playlist-part2)
+3. **Part 3: From Libraries to Dev Tools (this post)**
+
+Thanks for following along—happy (and focused) testing!
+
+---
