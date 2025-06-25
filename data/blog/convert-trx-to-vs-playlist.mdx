@@ -1,0 +1,103 @@
+---
+title: 'Streamline .NET Testing: TRX to Playlist Converter'
+date: '2025-06-24'
+tags: ['.NET', 'C#', 'github-actions', 'nuget', 'Testing', 'CI/CD', 'Visual Studio']
+draft: false
+authors: ['default']
+layout: PostLayout
+---
+
+![Streamline .NET Testing Banner](/static/images/blog/convert-trx-to-vs-playlist/banner.png)
+
+# Streamline .NET Testing: TRX to Playlist Converter
+
+## Why I Built a TRX to VS Playlist Converter (and How You Can Use It)
+
+Before we dive in, here’s a quick primer for anyone new to these file types:
+
+- **.trx file:** This is a Visual Studio Test Results file, generated when you run tests using Visual Studio or `dotnet test`. It’s an XML file that records the outcome of each test (passed, failed, skipped, etc.) and is commonly used in CI pipelines to capture test results.
+- **.playlist file:** This is a Visual Studio Test Explorer playlist file. It’s a simple XML format that lets you group and run specific tests in Visual Studio. You can open a `.playlist` file in Visual Studio to quickly focus on a subset of tests—like just the ones that failed.
+
+If you’ve ever wrangled with .NET test failures in a CI pipeline, you know the pain: a wall of red in your build, a list of failing tests, and a local workflow that suddenly gets a lot slower. Wouldn’t it be nice if, instead of hunting down which tests failed, you could just open Visual Studio and immediately re-run only those failing tests?
+
+---
+
+## The Problem: CI Failures and Developer Friction
+
+Let’s paint a familiar picture:
+
+- Your CI pipeline runs hundreds (maybe thousands) of tests.
+- A handful fail. The pipeline gives you the logs in the output of all the tests that failed.
+- You want to focus just on those failing tests locally—ideally, in Visual Studio, using its Test Explorer and all the tools you’re used to.
+
+But Visual Studio can’t directly read `.trx` files as playlists. It wants `.playlist` files. And creating those by hand? No thanks.
+
+I wanted a way to bridge that gap - take the `.trx` file, convert it into a `.playlist`, and get right to fixing what’s broken.
+
+---
+
+## The Idea: Automate the Feedback Loop
+
+What I really wanted was this:
+
+- When tests fail in CI, automatically generate a `.playlist` file containing just those tests.
+- Download the artifact, and with one click in Visual Studio Test Explorer’s **“Open Playlist File”** button, see only the tests that matter.
+
+---
+
+## The Solution: A Toolchain for Test Focus
+
+![TRX to Playlist Workflow](/static/images/blog/convert-trx-to-vs-playlist/TrxToPlaylistImage.png)
+
+I ended up building a set of tools (and NuGet packages) to make this possible:
+
+- **[TrxLib](https://www.nuget.org/packages/TrxLib):** Parses `.trx` files, including all the quirks and metadata.
+- **[VSTestPlaylistTools](https://www.nuget.org/packages/VSTestPlaylistTools):** Reads and writes Visual Studio `.playlist` files (both V1 and V2 formats).
+- **[trx-to-vsplaylist](https://www.nuget.org/packages/trx-to-vsplaylist):** Command-line tool to convert `.trx` files to `.playlist` files, with filtering and batch support.
+- **[trx-to-vsplaylist GitHub Action](https://github.com/BenjaminMichaelis/trx-to-vsplaylist):** Drop into your workflow to auto-generate and upload playlist files as artifacts on CI.
+
+Everything is open source on [GitHub](https://github.com/BenjaminMichaelis/VS.TestPlaylistTools).
+
+---
+
+## How to Use It in Your Project
+
+The centerpiece of my solution is a [GitHub Action](https://github.com/marketplace/actions/trx-to-vs-playlist-converter) that does exactly that. Add the action to your workflow, and it will:
+
+1. Parse your TRX results after a test run.
+2. Generate a Visual Studio playlist file with just the tests you want (failed, passed, whatever).
+3. Upload the playlist as an artifact for easy download.
+
+No more manual fiddling—just open the playlist in Visual Studio and go!
+
+**How to use it in your workflow:**
+
+```yaml
+- name: Run Tests
+  # Make sure to output the results to a TRX file
+  # More information on outputting TRX files can be found in the [dotnet test documentation](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test?tabs=dotnet-test-with-vstest&WT.mc_id=8B97120A00B57354)
+  run: dotnet test --logger trx --results-directory ./TestResults
+
+- name: Convert TRX to Playlist
+  uses: BenjaminMichaelis/trx-to-vsplaylist@v1
+  with:
+    # This can use wildcards to match multiple TRX files
+    trx-file-path: './TestResults/*.trx'
+    test-outcomes: 'Failed'
+    artifact-name: 'failing-tests-playlist'
+```
+
+Check out the [GitHub Action documentation](https://github.com/BenjaminMichaelis/trx-to-vsplaylist) for more details on configuration options.
+
+## Command-Line Tool for Local and Advanced Usage
+
+Prefer working locally or need to batch convert lots of files? There’s also a CLI tool:
+
+```bash
+dotnet tool install --global trx-to-vsplaylist
+trx-to-vsplaylist convert ./TestResults/results.trx --outcome Failed
+```
+
+Check out the [Readme](https://github.com/BenjaminMichaelis/VS.TestPlaylistTools/blob/main/trx-to-vsplaylist/README.md) for more details on options and usage.
+
+Now, if your CI run fails, just download the playlist artifact, open it in Visual Studio, and get right to work on the tests that need your attention.

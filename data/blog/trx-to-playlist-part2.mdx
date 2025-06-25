@@ -1,0 +1,138 @@
+---
+title: 'From TRX to Playlist: Building a Dev-Friendly Test Toolchain – Part 2: Parsing the Playlist and TRX Files: Lessons from the Trenches'
+date: '2025-06-25'
+tags: ['.NET', 'Testing', 'CI/CD', 'Visual Studio', 'DevTools']
+draft: true
+authors: ['default']
+layout: PostLayout
+series: ['From TRX to Playlist: Building a Dev-Friendly Test Toolchain']
+---
+
+# From TRX to Playlist: Building a Dev-Friendly Test Toolchain
+
+## Part 2: Parsing the Playlist and TRX Files – Lessons from the Trenches
+
+Welcome back! In [Part 1](./trx-to-playlist-part1), I introduced the motivation and the toolchain for converting `.trx` files to Visual Studio `.playlist` files. Today, let’s dig into the technical side: how I tackled the parsing and writing of both file formats, and what I learned along the way.
+
+---
+
+## Discovering V1 vs V2 Playlist Formats
+
+When I first started, I assumed a Visual Studio playlist was a playlist. Turns out, there are **two** formats:
+
+- **V1:** Simple XML, just a list of fully qualified test names.  
+  Example:
+  ```xml
+  <Playlist Version="1.0">
+      <Add Test="Namespace.Class.Method" />
+  </Playlist>
+  ```
+- **V2:** More complex, supports rules and conditions as well as test names.  
+  Example:
+  ```xml
+  <Playlist Version="2.0">
+      <Rule type="Test" match="Namespace.Class.Method" />
+      <!-- ... -->
+  </Playlist>
+  ```
+
+Most modern Visual Studio UIs create V2 files, but plenty of tools and scripts (and legacy code) still expect V1 (and these are easier to generate for my use case, and since Visual Studio still supports them, all the better). That meant I needed to support **both**, and even detect the version before parsing.
+
+I used DNSpy to look into `Microsoft.VisualStudio.TestWindow.Core.dll` and understand the internal models. This led to building my own models for both versions.
+
+---
+
+## Using AI Tools and Failing Tests to Guide Development
+
+I started by scaffolding out the solution using my [NuGet template](https://www.nuget.org/packages/BenjaminMichaelis.Dotnet.Templates):
+
+```bash
+dotnet new install BenjaminMichaelis.Dotnet.Templates
+dotnet new bmichaelis.nuget
+```
+
+Then, I brought in GitHub Copilot and Claude (Anthropic’s model) as “AI pair programmers.” It was especially handy for quickly drafting code based on decompiled XML models.
+
+But as with all AI help, things sometimes went... sideways.  
+**Pro tip:** Write failing tests first. This gives the AI (and yourself) a clear direction, and helps catch those subtle parsing bugs early. I wrote tests to:
+
+- Parse real-world playlist files (V1 and V2)
+- Round-trip (parse, then re-serialize, then diff against the original)
+- Handle unusual edge cases and metadata
+
+I also searched GitHub for real `.playlist` files to expand my test cases, since VS doesn’t produce V1 files anymore via the UI.
+
+---
+
+## Building VSTestPlaylistTools.\* and TrxLib
+
+This led to a set of focused NuGet packages:
+
+- [VSTestPlaylistTools.V1Playlist](https://www.nuget.org/packages/VSTestPlaylistTools.V1Playlist)
+- [VSTestPlaylistTools.V2Playlist](https://www.nuget.org/packages/VSTestPlaylistTools.V2Playlist)
+- [VSTestPlaylistTools](https://www.nuget.org/packages/VSTestPlaylistTools) (utility for format detection)
+- [TrxLib](https://www.nuget.org/packages/TrxLib) (my take on a robust, extensible TRX parser)
+
+A key lesson: **don’t trust existing libraries blindly.**  
+I started with [jonsequitur/t-rex](https://github.com/jonsequitur/t-rex) for TRX parsing, but it didn’t handle all the edge cases—especially with how test names and class names are embedded. So I wrote my own, supporting the full TRX schema and exposing both a friendly object model and a “raw XML escape hatch” for the weird cases.
+
+Sample:
+
+```csharp
+using TrxLib;
+var results = TrxParser.ParseFromFile("results.trx");
+foreach (var test in results.Tests)
+    Console.WriteLine(test.FullyQualifiedName);
+```
+
+---
+
+## Handling Format Quirks and Ensuring Fidelity
+
+One of the biggest “aha!” moments was realizing that Visual Studio expects **fully qualified test names** in the playlist file. But some TRX files only give you the method name, or the class and method separately.
+
+Older TRX:
+
+```xml
+<TestMethod className="Namespace.Class" name="MethodName" />
+```
+
+Newer TRX:
+
+```xml
+<TestMethod className="Namespace.Class.SubClass" name="MethodName" />
+```
+
+Playlist expects:  
+`Namespace.Class.MethodName`
+
+So, my converter stitches these together:
+
+```csharp
+var fqName = $"{test.ClassName}.{test.MethodName}";
+```
+
+I also made sure that when parsing a playlist and writing it back out, the file is **identical** (byte-for-byte) to the original—crucial for confidence in your parser.
+
+---
+
+## Publishing and Testing with Real-World Files
+
+After several rounds of “parse, write, diff, repeat” with files scraped from open source projects, I published the packages:
+
+- [TrxLib](https://www.nuget.org/packages/TrxLib)
+- [VSTestPlaylistTools](https://www.nuget.org/packages/VSTestPlaylistTools)
+
+All of this code (and more real-life examples) is available at [github.com/BenjaminMichaelis/VS.TestPlaylistTools](https://github.com/BenjaminMichaelis/VS.TestPlaylistTools).
+
+---
+
+## Up Next
+
+With solid, tested libraries in place, it was time to build **developer-friendly tools**: a CLI and a GitHub Action that anyone can drop into their workflow.
+
+> [Continue to Part 3: From Libraries to Dev Tools →](./trx-to-playlist-part3)
+
+Or try the [NuGet packages](https://www.nuget.org/packages/TrxLib) and [see the repo](https://github.com/BenjaminMichaelis/VS.TestPlaylistTools) for yourself.
+
+---
