@@ -1,0 +1,188 @@
+name: 'IndexNow Notification'
+
+on:
+  # Trigger when new content is pushed to main branch
+  push:
+    branches: [main]
+    paths:
+      - 'data/blog/**'
+      - 'data/projectsData.ts'
+  
+  # Manual trigger
+  workflow_dispatch:
+  
+  # Optional: scheduled check for any missed updates
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  notify-search-engines:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # Need at least 2 commits for git diff
+        
+      - name: Build URLs to submit
+        id: build-urls
+        env:
+          SITE_URL: https://benjamin.michaelis.net
+        run: |
+          echo "🚀 Building URLs for IndexNow submission..."
+          
+          # Initialize URLs array
+          urls=""
+          
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "📅 Scheduled run - submitting URLs from sitemap modified in last 24 hours"
+            
+            # For scheduled runs, we'll fetch the sitemap and parse recent URLs
+            # This is a simplified approach - you could enhance this
+            urls="\"$SITE_URL\",\"$SITE_URL/blog\",\"$SITE_URL/projects\",\"$SITE_URL/tags\""
+            
+          elif [ "${{ github.event_name }}" = "push" ]; then
+            echo "🔄 Push event - detecting changed files..."
+            
+            # Get changed files
+            changed_files=$(git diff --name-only HEAD~1 HEAD)
+            echo "Changed files: $changed_files"
+            
+            # Always include main pages for any push
+            urls="\"$SITE_URL\",\"$SITE_URL/blog\",\"$SITE_URL/tags\""
+            
+            # Process each changed file
+            for file in $changed_files; do
+              echo "Processing: $file"
+              
+              if [[ $file == data/blog/*.mdx ]]; then
+                # Extract slug from blog post filename
+                slug=$(basename "$file" .mdx)
+                blog_url="$SITE_URL/blog/$slug"
+                urls="$urls,\"$blog_url\""
+                echo "� Added blog post: $blog_url"
+              elif [[ $file == "data/projectsData.ts" ]]; then
+                # Projects page updated
+                if [[ $urls != *"$SITE_URL/projects"* ]]; then
+                  urls="$urls,\"$SITE_URL/projects\""
+                  echo "🚀 Added projects page"
+                fi
+              fi
+            done
+            
+          else
+            echo "🔧 Manual trigger - submitting all main URLs"
+            urls="\"$SITE_URL\",\"$SITE_URL/blog\",\"$SITE_URL/projects\",\"$SITE_URL/tags\""
+          fi
+          
+          # Clean up URLs (remove leading comma if present)
+          urls=$(echo "$urls" | sed 's/^,//')
+          
+          echo "📋 URLs to submit: [$urls]"
+          echo "urls=[$urls]" >> $GITHUB_OUTPUT
+          
+          # Count URLs for logging
+          url_count=$(echo "$urls" | grep -o '"' | wc -l)
+          url_count=$((url_count / 2))
+          echo "📊 Total URLs: $url_count"
+          echo "url_count=$url_count" >> $GITHUB_OUTPUT
+        
+      - name: Submit to IndexNow
+        if: steps.build-urls.outputs.url_count > 0
+        env:
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+          SITE_URL: https://benjamin.michaelis.net
+          URLS: ${{ steps.build-urls.outputs.urls }}
+        run: |
+          echo "🚀 Submitting URLs to IndexNow..."
+          echo "📊 Submitting ${{ steps.build-urls.outputs.url_count }} URLs"
+          
+          # Build JSON payload
+          json_payload=$(cat <<EOF
+          {
+            "host": "benjamin.michaelis.net",
+            "key": "$INDEXNOW_KEY",
+            "keyLocation": "$SITE_URL/$INDEXNOW_KEY.txt",
+            "urlList": $URLS
+          }
+          EOF
+          )
+          
+          echo "📤 Payload:"
+          echo "$json_payload" | jq '.'
+          
+          # Submit to Bing (primary endpoint)
+          echo "📡 Submitting to Bing..."
+          response=$(curl -s -w "\nHTTP_STATUS:%{http_code}" \
+            -X POST \
+            -H "Content-Type: application/json; charset=utf-8" \
+            -H "User-Agent: IndexNow-GitHub-Action/1.0" \
+            -d "$json_payload" \
+            https://www.bing.com/indexnow)
+          
+          # Parse response
+          http_status=$(echo "$response" | grep "HTTP_STATUS:" | cut -d: -f2)
+          response_body=$(echo "$response" | sed '/HTTP_STATUS:/d')
+          
+          echo "📥 Response Status: $http_status"
+          if [ -n "$response_body" ]; then
+            echo "📄 Response Body: $response_body"
+          fi
+          
+          # Handle different response codes
+          case $http_status in
+            200)
+              echo "✅ Successfully submitted URLs to IndexNow"
+              ;;
+            202)
+              echo "✅ URLs received, key validation pending"
+              ;;
+            403)
+              echo "❌ Key validation failed. Please check:"
+              echo "   - IndexNow key is correct in secrets"
+              echo "   - Key file is accessible at: $SITE_URL/$INDEXNOW_KEY.txt"
+              exit 1
+              ;;
+            422)
+              echo "❌ URLs don't belong to domain or key mismatch"
+              exit 1
+              ;;
+            429)
+              echo "⚠️ Too many requests. Will retry later."
+              ;;
+            *)
+              echo "⚠️ Unexpected response code: $http_status"
+              if [ "$http_status" -ge 400 ]; then
+                exit 1
+              fi
+              ;;
+          esac
+          
+          echo "✅ IndexNow submission completed!"
+        
+      - name: Verify key file accessibility
+        if: failure()
+        env:
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+          SITE_URL: https://benjamin.michaelis.net
+        run: |
+          echo "🔍 Verifying IndexNow key file accessibility..."
+          key_url="$SITE_URL/$INDEXNOW_KEY.txt"
+          
+          response=$(curl -s -w "\nHTTP_STATUS:%{http_code}" "$key_url")
+          http_status=$(echo "$response" | grep "HTTP_STATUS:" | cut -d: -f2)
+          response_body=$(echo "$response" | sed '/HTTP_STATUS:/d')
+          
+          echo "🌐 Checking: $key_url"
+          echo "📥 Status: $http_status"
+          echo "📄 Content: $response_body"
+          
+          if [ "$http_status" = "200" ] && [ "$response_body" = "$INDEXNOW_KEY" ]; then
+            echo "✅ Key file is accessible and valid"
+          else
+            echo "❌ Key file verification failed"
+            echo "💡 Make sure your Vercel deployment includes the key file generation"
+          fi
+
