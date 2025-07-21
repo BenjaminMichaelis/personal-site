@@ -1,0 +1,38 @@
+---
+title: 'Azure OpenAI 403 Exception: Access denied due to Virtual Network/Firewall rules'
+date: '2025-07-21'
+tags: ['.NET', 'Azure', 'AI']
+draft: false
+authors: ['default']
+layout: PostLayout
+---
+
+## Azure OpenAI 403 Exception: Access denied due to Virtual Network/Firewall rules
+
+While working on a solution for [Essential C#](https://essentialcsharp.com/) using Semantic Kernel and Azure OpenAI, I encountered a frustrating error:
+
+```
+Unhandled exception: System.ClientModel.ClientResultException: HTTP 403 (: 403)
+Access denied due to Virtual Network/Firewall rules.
+...
+```
+
+Now this may just be for my future self to remember, but I thought it was worth sharing in case anyone else runs into this.
+
+Naturally, I went straight to the Azure Portal and started fiddling with the networking and firewall settings. I even set the firewall to “All Networks” just to be sure, and waited for Azure to catch up.
+
+The real issue? Permissions. The service principal used by my GitHub Action pipeline didn’t have access to the OpenAI resource. Assigning the `Cognitive Services OpenAI User` role (or the more permissive `Cognitive Services Contributor` role) to the service principal resolved the issue immediately.
+
+This Azure error message definitely managed to send me down the wrong troubleshooting path, and I got tunnel vision on a potential networking issue and missed the permissions aspect initially.
+
+### Quick Troubleshooting Checklist
+
+Here’s what I wish I’d done from the start:
+
+1. **Check networking/firewall settings** for your Azure OpenAI resource.
+2. **Verify role assignments** for the identity/service principal accessing the resource. Make sure it has at least the `Cognitive Services OpenAI User` role.
+3. **Allow time for changes to propagate** after updating settings or permissions.
+
+#### Assigning the Role (Azure Portal)
+
+Go to your OpenAI resource in the Azure Portal, select **Access control (IAM)**, and add the appropriate role to your service principal or managed identity.
