@@ -86,6 +86,7 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: 'AdsBot-Google', allow: '/' },
       { userAgent: 'Mediapartners-Google', allow: '/' },
       { userAgent: 'Googlebot', allow: '/' },
+      { userAgent: 'Bingbot', allow: '/' },
       { userAgent: '*', allow: '/' },
     ],
     sitemap: `${siteMetadata.siteUrl}/sitemap.xml`,
