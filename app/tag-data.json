@@ -1,5 +1,7 @@
 {
-  "net": 5,
+  "net": 6,
+  "azure": 1,
+  "ai": 1,
   "testing": 3,
   "cicd": 3,
   "visual-studio": 3,
