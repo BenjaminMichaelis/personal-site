@@ -21,13 +21,39 @@ export default function Home({ posts }) {
           </div>
           <div className="max-w-xl space-y-4 text-gray-600 dark:text-gray-400">
             <p>
-              I deliver high-quality software solutions in industries like Higher Education and
-              Financial Services, specializing in .NET, Azure, and DevOps. I hold Azure and GitHub
-              certifications and teach .NET programming at Eastern Washington University and
-              IntelliTect.
+              Hi, I’m Ben 👋 a software engineer at
+              <a href="https://intellitect.com" className="text-blue-600 dark:text-blue-400">
+                {' '}
+                IntelliTect
+              </a>
+              . I love building{' '}
+              <strong>cloud-native systems, developer tools, and full-stack .NET apps</strong>
+              that make life easier for developers and help teams ship faster.
             </p>
             <p>
-              Outside of work, I enjoy outdoor activities and spending time with family and friends.
+              I maintain
+              <a href="https://essentialcsharp.com" className="text-blue-600 dark:text-blue-400">
+                {' '}
+                EssentialCSharp.com
+              </a>{' '}
+              and co-author <em>Essential C#</em>. Teaching and sharing what I learn keeps me
+              energized, whether it's in a classroom at Eastern Washington University, mentoring at
+              IntelliTect, or writing here on this blog.
+            </p>
+            <p>
+              Over the years, I've worked on systems in higher education, utilities, finance, and
+              startups. Along the way, I've also helped build IntelliTect products like
+              <a href="https://stormingcastle.com" className="text-blue-600 dark:text-blue-400">
+                {' '}
+                StormingTheCastle.com
+              </a>
+              .
+            </p>
+
+            <p>
+              Outside of code, you'll usually find me on a trail, behind a camera, planning my next
+              trip, or just enjoying time with friends and family. This site is my place to share
+              what I'm building, learning, and sometimes just what I find fun.
             </p>
           </div>
         </div>

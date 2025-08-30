@@ -14,16 +14,34 @@ const projectsData: Project[] = [
     href: 'https://essentialcsharp.com/',
   },
   {
+    title: 'C# Multitool Library',
+    description: 'Library of useful additions to your C# application',
+    href: 'https://www.nuget.org/packages/IntelliTect.Multitool',
+  },
+  {
+    title: 'TRX to VS Playlist',
+    description: 'Convert TRX test results to Visual Studio .vsplaylist for focused runs.',
+    href: 'https://github.com/BenjaminMichaelis/trx-to-vsplaylist',
+  },
+  {
+    title: '.NET Templates',
+    description: 'Opinionated dotnet new templates for faster project bootstrapping.',
+    href: 'https://github.com/BenjaminMichaelis/DotnetTemplates',
+  },
+  {
     title: 'Essential C# Source Code',
     description: 'The source code for all the examples and lessons in the Essential C# book.',
-    imgSrc: '/static/images/EssentialCSharp.png',
     href: 'https://github.com/IntelliTect/EssentialCSharp',
   },
   {
-    title: 'C# Multitool Library',
-    description: 'Library of useful additions to your C# application',
-    imgSrc: '/static/images/nuget.svg',
-    href: 'https://www.nuget.org/packages/IntelliTect.Multitool',
+    title: 'TrxLib',
+    description: 'Lightweight .NET library for parsing and working with TRX test result files.',
+    href: 'https://github.com/BenjaminMichaelis/TrxLib',
+  },
+  {
+    title: 'VS.TestPlaylistTools',
+    description: 'Utilities for generating and manipulating Visual Studio test playlist files.',
+    href: 'https://github.com/BenjaminMichaelis/VS.TestPlaylistTools',
   },
 ]
 
