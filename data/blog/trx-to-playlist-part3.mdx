@@ -10,7 +10,7 @@ summary: 'Build command-line tools and GitHub Actions for .NET test automation. 
 
 # From TRX to Playlist: Building a Dev-Friendly Test Toolchain
 
-## Part 3: From Libraries to Dev Tools—Building the CLI and GitHub Action
+## Part 3: From Libraries to Dev Tools: Building the CLI and GitHub Action
 
 In [Part 1](./trx-to-playlist-part1), I described the motivation behind this project. [Part 2](./trx-to-playlist-part2) was a deep dive into parsing and format quirks. Now, let’s bring it all together: turning libraries into practical developer tools.
 
@@ -80,7 +80,7 @@ This gave me end-to-end confidence that the tool works in real CI environments.
 
 ## Debugging Visual Studio Compatibility Issues
 
-At one point, my generated playlist files didn’t work in Visual Studio—they imported, but no tests appeared. After some investigation, I realized the problem: **Visual Studio needs fully qualified test names**, but some `.trx` files (especially from older test runners) only include the bare method name, or changed how class names are qualified.
+At one point, my generated playlist files didn’t work in Visual Studio, they imported, but no tests appeared. After some investigation, I realized the problem: **Visual Studio needs fully qualified test names**, but some `.trx` files (especially from older test runners) only include the bare method name, or changed how class names are qualified.
 
 Solution:
 
@@ -118,6 +118,6 @@ Pull requests and suggestions are welcome. If you use the tool, let me know what
 2. [Part 2: Parsing the Playlist and TRX Files](./trx-to-playlist-part2)
 3. **Part 3: From Libraries to Dev Tools (this post)**
 
-Thanks for following along—happy (and focused) testing!
+Thanks for following along, happy (and focused) testing!
 
 ---

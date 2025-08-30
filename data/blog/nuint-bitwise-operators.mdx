@@ -90,7 +90,7 @@ Which tells us that yes, in fact `nint` and `nuint` support bitwise operations.
 
 ### Special Types and Edge Cases
 
-Kevin had a good reminder that there is one thing to watch out for with some of these "special" types. Because the operator methods in `IBitwiseOperators` are abstract, the default interface implementation is actually provided in types like `UIntPtr` (part of the BCL). These implementations are generally reliable, but there is always a chance that the compiler or runtime optimizes them differently in certain cases. This is similar to how lifted operators work with `Nullable<T>`—the compiler can generate special logic for these cases, which may not always match the direct implementation you see in the BCL.
+There is one thing to watch out for with some of these "special" types. Because the operator methods in `IBitwiseOperators` are abstract, the default interface implementation is actually provided in types like `UIntPtr` (part of the BCL). These implementations are generally reliable, but there is always a chance that the compiler or runtime optimizes them differently in certain cases. This is similar to how lifted operators work with `Nullable<T>`, the compiler can generate special logic for these cases, which may not always match the direct implementation you see in the BCL.
 
 ### Conclusion
 
@@ -99,4 +99,4 @@ After this investigation, I realized that the Microsoft documentation did not me
 - https://github.com/dotnet/docs/pull/44973
 - [Fixed documentation](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/bitwise-and-shift-operators?WT.mc_id=8B97120A00B57354)
 
-This update helps ensure that future readers and developers are aware that native-sized integers (`nint` and `nuint`) do support bitwise operations, and that the omission in the docs was simply an oversight. If you ever find something missing or unclear in the documentation, consider submitting a PR—it's a great way to help the community!
+This update helps ensure that future readers and developers are aware that native-sized integers (`nint` and `nuint`) do support bitwise operations, and that the omission in the docs was simply an oversight. If you ever find something missing or unclear in the documentation, consider submitting a PR, it's a great way to help the community!

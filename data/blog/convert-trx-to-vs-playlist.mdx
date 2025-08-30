@@ -17,7 +17,7 @@ summary: 'Learn how to convert .NET test results (TRX files) to Visual Studio pl
 Before we dive in, here’s a quick primer for anyone new to these file types:
 
 - **.trx file:** This is a Visual Studio Test Results file, generated when you run tests using Visual Studio or `dotnet test`. It’s an XML file that records the outcome of each test (passed, failed, skipped, etc.) and is commonly used in CI pipelines to capture test results.
-- **.playlist file:** This is a Visual Studio Test Explorer playlist file. It’s a simple XML format that lets you group and run specific tests in Visual Studio. You can open a `.playlist` file in Visual Studio to quickly focus on a subset of tests—like just the ones that failed.
+- **.playlist file:** This is a Visual Studio Test Explorer playlist file. It’s a simple XML format that lets you group and run specific tests in Visual Studio. You can open a `.playlist` file in Visual Studio to quickly focus on a subset of tests-like just the ones that failed.
 
 If you’ve ever wrangled with .NET test failures in a CI pipeline, you know the pain: a wall of red in your build, a list of failing tests, and a local workflow that suddenly gets a lot slower. Wouldn’t it be nice if, instead of hunting down which tests failed, you could just open Visual Studio and immediately re-run only those failing tests?
 
@@ -29,7 +29,7 @@ Let’s paint a familiar picture:
 
 - Your CI pipeline runs hundreds (maybe thousands) of tests.
 - A handful fail. The pipeline gives you the logs in the output of all the tests that failed.
-- You want to focus just on those failing tests locally—ideally, in Visual Studio, using its Test Explorer and all the tools you’re used to.
+- You want to focus just on those failing tests locally, ideally, in Visual Studio, using its Test Explorer and all the tools you’re used to.
 
 But Visual Studio can’t directly read `.trx` files as playlists. It wants `.playlist` files. And creating those by hand? No thanks.
 
@@ -69,7 +69,7 @@ The centerpiece of my solution is a [GitHub Action](https://github.com/marketpla
 2. Generate a Visual Studio playlist file with just the tests you want (failed, passed, whatever).
 3. Upload the playlist as an artifact for easy download.
 
-No more manual fiddling—just open the playlist in Visual Studio and go!
+No more manual fiddling, just open the playlist in Visual Studio and go!
 
 **How to use it in your workflow:**
 
