@@ -1,7 +1,5 @@
 {
   "net": 6,
-  "azure": 1,
-  "ai": 1,
   "testing": 3,
   "cicd": 3,
   "visual-studio": 3,
@@ -12,5 +10,9 @@
   "ssms": 1,
   "copilot": 1,
   "debugging": 1,
-  "personal": 1
+  "personal": 1,
+  "azure": 1,
+  "ai": 1,
+  "openai": 1,
+  "troubleshooting": 1
 }
