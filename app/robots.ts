@@ -17,7 +17,7 @@ export default function robots(): MetadataRoute.Robots {
     'Brightbot 1.0',
     'Bytespider',
     'CCBot',
-    'ChatGPT-User',
+    // 'ChatGPT-User',
     'Claude-SearchBot',
     'Claude-User',
     'Claude-Web',
