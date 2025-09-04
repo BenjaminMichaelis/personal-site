@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteMetadata.siteUrl),
   title: {
     default: siteMetadata.title,
-    template: `%s | ${siteMetadata.title}`,
+    template: `%s`,
   },
   description: siteMetadata.description,
   openGraph: {
@@ -93,6 +93,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta
           name="google-site-verification"
           content="_f6ons0t1YM3ddQhUbg7cU321gsjKauoGPGuY4B1gfw"
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebSite',
+              url: siteMetadata.siteUrl,
+              name: siteMetadata.title,
+              alternateName: 'Benjamin Michaelis',
+            }),
+          }}
         />
       </head>
       <body className="bg-white pl-[calc(100vw-100%)] text-black antialiased dark:bg-gray-950 dark:text-white">
