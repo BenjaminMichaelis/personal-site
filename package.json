@@ -9,6 +9,10 @@
     "serve": "next start",
     "analyze": "cross-env ANALYZE=true next build",
     "lint": "next lint --fix --dir pages --dir app --dir components --dir lib --dir layouts --dir scripts",
+    "validate": "cross-env NODE_OPTIONS='--experimental-json-modules' node ./scripts/validate.mjs",
+    "validate:quick": "cross-env NODE_OPTIONS='--experimental-json-modules' node ./scripts/validate.mjs structure links",
+    "validate:full": "cross-env NODE_OPTIONS='--experimental-json-modules' node ./scripts/validate.mjs structure links lint types build",
+    "precommit": "yarn validate:quick",
     "prepare": "husky"
   },
   "dependencies": {
@@ -64,6 +68,7 @@
     "globals": "^16.3.0",
     "husky": "^9.0.0",
     "lint-staged": "^15.5.1",
+    "markdown-link-check": "^3.13.7",
     "prettier": "^3.0.0",
     "prettier-plugin-tailwindcss": "^0.6.14",
     "typescript": "^5.1.3"

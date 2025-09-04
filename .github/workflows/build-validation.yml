@@ -1,0 +1,44 @@
+name: Build & Validation
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: Validate Content & Code
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+        
+      - name: Run quick validation (PR)
+        if: github.event_name == 'pull_request'
+        run: yarn validate:quick
+        
+      - name: Run full validation (main branch)
+        if: github.ref == 'refs/heads/main'
+        run: yarn validate:full
+        
+      - name: Upload build artifacts (main branch only)
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: |
+            .next/
+            out/
+          retention-days: 1
