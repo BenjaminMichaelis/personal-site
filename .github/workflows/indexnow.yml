@@ -58,11 +58,23 @@ jobs:
               echo "Processing: $file"
               
               if [[ $file == data/blog/*.mdx ]]; then
-                # Extract slug from blog post filename
-                slug=$(basename "$file" .mdx)
-                blog_url="$SITE_URL/blog/$slug"
-                urls="$urls,\"$blog_url\""
-                echo "� Added blog post: $blog_url"
+                # Check if the blog post is a draft
+                if [ -f "$file" ]; then
+                  # Extract draft status from frontmatter
+                  draft_status=$(head -20 "$file" | grep -E '^draft:' | sed 's/draft:[[:space:]]*//' | tr -d '"' | tr -d "'" | xargs)
+                  
+                  if [[ "$draft_status" == "true" ]]; then
+                    echo "⏸️ Skipping draft post: $file"
+                  else
+                    # Extract slug from blog post filename
+                    slug=$(basename "$file" .mdx)
+                    blog_url="$SITE_URL/blog/$slug"
+                    urls="$urls,\"$blog_url\""
+                    echo "📝 Added blog post: $blog_url"
+                  fi
+                else
+                  echo "⚠️ File not found: $file (might be deleted)"
+                fi
               elif [[ $file == "data/projectsData.ts" ]]; then
                 # Projects page updated
                 if [[ $urls != *"$SITE_URL/projects"* ]]; then
