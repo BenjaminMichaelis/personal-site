@@ -26,6 +26,7 @@ import siteMetadata from './data/siteMetadata'
 import { allCoreContent, sortPosts } from 'pliny/utils/contentlayer.js'
 import prettier from 'prettier'
 import { resolveLastmod } from './utils/resolveLastmod'
+import { remarkShiftHeadings } from './utils/remarkShiftHeadings'
 
 const root = process.cwd()
 const isProduction = process.env.NODE_ENV === 'production'
@@ -161,6 +162,7 @@ export default makeSource({
       remarkMath,
       remarkImgToJsx,
       remarkAlert,
+      remarkShiftHeadings,
     ],
     rehypePlugins: [
       rehypeSlug,
