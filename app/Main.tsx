@@ -45,7 +45,7 @@ export default function Home({ posts }) {
               startups. Along the way, I've also helped build IntelliTect products like
               <a href="https://stormingcastle.com" className="text-blue-600 dark:text-blue-400">
                 {' '}
-                StormingTheCastle.com
+                StormingCastle.com
               </a>
               .
             </p>
