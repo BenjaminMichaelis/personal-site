@@ -28,20 +28,5 @@ jobs:
       - name: Generate contentlayer data
         run: yarn contentlayer:build
         
-      - name: Run quick validation (PR)
-        if: github.event_name == 'pull_request'
-        run: yarn validate:quick
-        
       - name: Run full validation (main branch)
-        if: github.ref == 'refs/heads/main'
         run: yarn validate:full
-        
-      - name: Upload build artifacts (main branch only)
-        if: github.ref == 'refs/heads/main'
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-output
-          path: |
-            .next/
-            out/
-          retention-days: 1
