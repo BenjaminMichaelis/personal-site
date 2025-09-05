@@ -25,6 +25,9 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
         
+      - name: Generate contentlayer data
+        run: yarn contentlayer:build
+        
       - name: Run quick validation (PR)
         if: github.event_name == 'pull_request'
         run: yarn validate:quick

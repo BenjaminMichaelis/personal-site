@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 
-import { allBlogs } from '../.contentlayer/generated/index.mjs'
 import { readFileSync, existsSync } from 'fs'
 import { join } from 'path'
 import { spawn } from 'child_process'
 
 const linkRegex = /\[([^\]]+)\]\(\.\/([^)]+)\)/g
+
+let allBlogs = []
+const contentlayer = await import('../.contentlayer/generated/index.mjs')
+allBlogs = contentlayer.allBlogs || []
 
 class ValidationError extends Error {
   constructor(message, file, line) {
@@ -38,6 +41,11 @@ async function runCommand(command, args = [], options = {}) {
 }
 
 function validateInternalLinks() {
+  if (allBlogs.length === 0) {
+    console.log('⚠️  Skipping internal link validation - no blog data available')
+    return
+  }
+
   console.log('🔗 Validating internal links...')
 
   const errors = []
@@ -84,6 +92,11 @@ function validateInternalLinks() {
 }
 
 function validateBlogPostStructure() {
+  if (allBlogs.length === 0) {
+    console.log('⚠️  Skipping blog post structure validation - no blog data available')
+    return
+  }
+
   console.log('📄 Validating blog post structure...')
 
   const errors = []
