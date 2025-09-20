@@ -1,0 +1,51 @@
+name: Copilot Setup Steps
+
+on:
+  push:
+    paths:
+      - '.github/workflows/copilot-setup-steps.yml'
+  pull_request:
+    paths:
+      - '.github/workflows/copilot-setup-steps.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  copilot-setup-steps:
+    name: Copilot Environment Setup
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          
+      - name: Install JavaScript dependencies
+        run: yarn install --immutable
+        
+      - name: Cache .NET packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.fsproj', '**/*.vbproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+        
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+          
+      - name: Verify environment setup
+        run: |
+          echo "Node.js version: $(node --version)"
+          echo "npm version: $(npm --version)"
+          echo ".NET version: $(dotnet --version)"
+          echo "Environment setup completed successfully for Copilot"
