@@ -2,17 +2,17 @@
   "ai": 1,
   "azure": 1,
   "c": 2,
-  "cicd": 2,
+  "cicd": 3,
   "copilot": 1,
   "debugging": 1,
-  "devtools": 1,
+  "devtools": 2,
   "github-actions": 2,
-  "net": 5,
+  "net": 6,
   "nuget": 2,
   "openai": 1,
   "personal": 1,
   "ssms": 1,
-  "testing": 2,
+  "testing": 3,
   "troubleshooting": 1,
-  "visual-studio": 2
+  "visual-studio": 3
 }
