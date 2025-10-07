@@ -19,6 +19,7 @@ export default function LinksPage() {
       title: 'Website',
       description: 'Visit my blog for articles and updates',
       href: siteMetadata.siteUrl,
+      iconKind: 'globe' as const,
     },
     {
       title: 'GitHub',

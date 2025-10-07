@@ -12,6 +12,7 @@ import {
   Instagram,
   Medium,
   Bluesky,
+  Globe,
 } from './social-icons/icons'
 
 const iconComponents = {
@@ -27,6 +28,7 @@ const iconComponents = {
   instagram: Instagram,
   medium: Medium,
   bluesky: Bluesky,
+  globe: Globe,
 }
 
 interface LinkCardProps {
