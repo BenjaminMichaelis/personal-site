@@ -125,9 +125,33 @@ export function Globe(svgProps: SVGProps<SVGSVGElement>) {
 
 export function CSharp(svgProps: SVGProps<SVGSVGElement>) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...svgProps}>
-      <title>C Sharp</title>
-      <path d="M1.194 7.543v8.913c0 1.103.588 2.122 1.544 2.674l7.718 4.456a3.086 3.086 0 0 0 3.088 0l7.718-4.456a3.087 3.087 0 0 0 1.544-2.674V7.543a3.084 3.084 0 0 0-1.544-2.673L13.544.414a3.086 3.086 0 0 0-3.088 0L2.738 4.87a3.085 3.085 0 0 0-1.544 2.673Zm5.403 2.914v3.087a.77.77 0 0 0 .772.772.771.771 0 0 0 .771-.772.771.771 0 0 1 .772-.771.771.771 0 0 1 .771.771v3.087a.77.77 0 0 1-.771.772.771.771 0 0 1-.772-.772.771.771 0 0 0-.771-.771.771.771 0 0 0-.772.771 2.314 2.314 0 0 0 4.628 0v-3.087a2.316 2.316 0 0 0-4.628 0Zm12.01 3.087a.77.77 0 0 1-.772.772.771.771 0 0 1-.771-.772.771.771 0 0 0-.772-.771.771.771 0 0 0-.771.771 2.314 2.314 0 0 0 4.628 0v-3.087a2.314 2.314 0 0 0-4.628 0v3.087a.77.77 0 0 0 .771.772.771.771 0 0 0 .772-.772.771.771 0 0 1 .771-.771c.428 0 .772.346.772.771v3.087Zm-3.086-3.858h-1.543V8.314h1.543v1.372Zm0 3.086h-1.543v-1.371h1.543v1.371Z" />
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" {...svgProps}>
+      <title>Essential C#</title>
+      {/* Book shape */}
+      <path
+        d="M6 2C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V4C20 2.89543 19.1046 2 18 2H6Z"
+        fill="currentColor"
+        opacity="0.2"
+      />
+      <path
+        d="M6 2C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V4C20 2.89543 19.1046 2 18 2H6Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      {/* Book spine line */}
+      <path d="M8 2V22" stroke="currentColor" strokeWidth="1.5" />
+      {/* C# text represented as simplified shapes */}
+      <circle cx="13" cy="10" r="2.5" stroke="currentColor" strokeWidth="1.2" fill="none" />
+      <path d="M15.5 10C15.5 8.61929 14.3807 7.5 13 7.5" stroke="currentColor" strokeWidth="1.2" />
+      <path d="M16 14H17M16 16H17" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+      <path
+        d="M14.5 15H15.5M14.5 15V17"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+      />
     </svg>
   )
 }
