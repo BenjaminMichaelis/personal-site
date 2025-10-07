@@ -127,31 +127,19 @@ export function CSharp(svgProps: SVGProps<SVGSVGElement>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" {...svgProps}>
       <title>Essential C#</title>
-      {/* Book shape */}
       <path
-        d="M6 2C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V4C20 2.89543 19.1046 2 18 2H6Z"
+        d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z"
         fill="currentColor"
-        opacity="0.2"
+        opacity="0.15"
       />
       <path
-        d="M6 2C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V4C20 2.89543 19.1046 2 18 2H6Z"
+        d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z"
         stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      {/* Book spine line */}
-      <path d="M8 2V22" stroke="currentColor" strokeWidth="1.5" />
-      {/* C# text represented as simplified shapes */}
-      <circle cx="13" cy="10" r="2.5" stroke="currentColor" strokeWidth="1.2" fill="none" />
-      <path d="M15.5 10C15.5 8.61929 14.3807 7.5 13 7.5" stroke="currentColor" strokeWidth="1.2" />
-      <path d="M16 14H17M16 16H17" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-      <path
-        d="M14.5 15H15.5M14.5 15V17"
-        stroke="currentColor"
-        strokeWidth="1.2"
-        strokeLinecap="round"
-      />
+      <path d="M14 2V8H20" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
     </svg>
   )
 }
