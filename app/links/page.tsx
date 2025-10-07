@@ -39,7 +39,7 @@ export default function LinksPage() {
       href: 'https://essentialcsharp.com',
       iconKind: 'csharp' as const,
     },
-  ].filter((link) => link.href)
+  ].filter((link): link is typeof link & { href: string } => Boolean(link.href))
 
   return (
     <>
