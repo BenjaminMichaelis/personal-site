@@ -13,6 +13,7 @@ import {
   Medium,
   Bluesky,
   Globe,
+  CSharp,
 } from './social-icons/icons'
 
 const iconComponents = {
@@ -29,6 +30,7 @@ const iconComponents = {
   medium: Medium,
   bluesky: Bluesky,
   globe: Globe,
+  csharp: CSharp,
 }
 
 interface LinkCardProps {

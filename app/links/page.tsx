@@ -34,12 +34,12 @@ export default function LinksPage() {
       iconKind: 'linkedin' as const,
     },
     {
-      title: 'Mastodon',
-      description: 'Follow me on Mastodon',
-      href: siteMetadata.mastodon,
-      iconKind: 'mastodon' as const,
+      title: 'Essential C#',
+      description: 'Your ultimate guide to mastering C# programming',
+      href: 'https://essentialcsharp.com',
+      iconKind: 'csharp' as const,
     },
-  ].filter((link) => link.href)
+  ].filter((link): link is typeof link & { href: string } => Boolean(link.href))
 
   return (
     <>
