@@ -5338,14 +5338,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^13.1.0":
-  version: 13.1.0
-  resolution: "commander@npm:13.1.0"
-  checksum: 8ca2fcb33caf2aa06fba3722d7a9440921331d54019dabf906f3603313e7bf334b009b862257b44083ff65d5a3ab19e83ad73af282bd5319f01dc228bdf87ef0
-  languageName: node
-  linkType: hard
-
-"commander@npm:^14.0.1":
+"commander@npm:^14.0.0, commander@npm:^14.0.1":
   version: 14.0.1
   resolution: "commander@npm:14.0.1"
   checksum: a072b714e73a69cc85e68f588a3c910f330e5b31861fe1f9abc9312e81bdca193676fc1fea99f739b4237ee903751fb20b4adcdd409ec4c4df0964792e9daa47
@@ -8570,16 +8563,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"link-check@npm:^5.4.0":
-  version: 5.4.0
-  resolution: "link-check@npm:5.4.0"
+"link-check@npm:^5.5.0":
+  version: 5.5.0
+  resolution: "link-check@npm:5.5.0"
   dependencies:
     is-relative-url: ^4.0.0
     ms: ^2.1.3
     needle: ^3.3.1
     node-email-verifier: ^2.0.0
     proxy-agent: ^6.4.0
-  checksum: 488ac0e75c1fe76c572f57f1820f992faa8abf6cc780851c0423e6f9d67a4a00ad3f563ba6e00cc3f13135cebed9455b36606146b2e01e67f1e70fa442632e8e
+  checksum: dd91b39fae8e0657753828ad12f7f3304dd8ad854c1ebc006e0e222a35af86728134337bed9e008db3514cc2179d375dd9f1d5c6b63a8a902c950e1a02f40373
   languageName: node
   linkType: hard
 
@@ -8780,14 +8773,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"markdown-link-check@npm:^3.13.7":
-  version: 3.13.7
-  resolution: "markdown-link-check@npm:3.13.7"
+"markdown-link-check@npm:^3.14.1":
+  version: 3.14.1
+  resolution: "markdown-link-check@npm:3.14.1"
   dependencies:
     async: ^3.2.6
     chalk: ^5.3.0
-    commander: ^13.1.0
-    link-check: ^5.4.0
+    commander: ^14.0.0
+    link-check: ^5.5.0
     markdown-link-extractor: ^4.0.2
     needle: ^3.3.1
     progress: ^2.0.3
@@ -8795,7 +8788,7 @@ __metadata:
     xmlbuilder2: ^3.1.1
   bin:
     markdown-link-check: markdown-link-check
-  checksum: acb38025f84fcf8ccbefc8d20316e88a051f28a40dfb49e0d882d005096c5e7d72772ce5d5e53a329c2033528fa76e4205df182f0368dc37295f7c89f3568b40
+  checksum: de5e15579cff7ebe9fed167ccb6791900e28db6c947342971d5cabb2126f816f2dec5fac3ffaae6ad24bc7a8008c4b4d900dd834416eb1af08ba15630aa48afa
   languageName: node
   linkType: hard
 
@@ -12390,7 +12383,7 @@ __metadata:
     husky: ^9.1.7
     image-size: 2.0.2
     lint-staged: ^16.2.4
-    markdown-link-check: ^3.13.7
+    markdown-link-check: ^3.14.1
     mdx-bundler: ^10.1.1
     next: 15.5.4
     next-contentlayer2: 0.5.8
