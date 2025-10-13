@@ -3819,14 +3819,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tailwindcss/typography@npm:^0.5.18":
-  version: 0.5.18
-  resolution: "@tailwindcss/typography@npm:0.5.18"
+"@tailwindcss/typography@npm:^0.5.19":
+  version: 0.5.19
+  resolution: "@tailwindcss/typography@npm:0.5.19"
   dependencies:
     postcss-selector-parser: 6.0.10
   peerDependencies:
     tailwindcss: "*"
-  checksum: b686adbc396f54838d59e76fe6b862e3fc0a3b081d16153d7dde8962232e9cac62b4e00eb57edb6e610c751347c5c95f8ab5a0587db76a8380ee3a99c77389e9
+  checksum: 6e5b25a2a24b8f112c9628b29aee4579ed024f368111937a5f3be7a4adc2d768c1aa9d5d5bb2d04972c7b49e526bcaade9f9e785e2e7a0b6be3d392f7ba02e17
   languageName: node
   linkType: hard
 
@@ -12430,7 +12430,7 @@ __metadata:
     "@svgr/webpack": ^8.1.0
     "@tailwindcss/forms": ^0.5.10
     "@tailwindcss/postcss": ^4.1.14
-    "@tailwindcss/typography": ^0.5.18
+    "@tailwindcss/typography": ^0.5.19
     "@types/mdx": ^2.0.13
     "@types/react": ^19.2.2
     "@typescript-eslint/eslint-plugin": ^8.46.0
