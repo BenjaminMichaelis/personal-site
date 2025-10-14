@@ -1,0 +1,157 @@
+---
+title: 'When setup-dotnet + <clear/> NuGet.config Breaks Azure Artifacts Auth (401 after adding checkout)'
+date: '2025-10-14'
+tags: ['.NET', 'NuGet', 'github-actions', 'Azure', 'cicd', 'troubleshooting']
+draft: true
+authors: ['default']
+layout: PostLayout
+summary: 'Diagnosing a sudden 401 from dotnet nuget push to an Azure Artifacts feed after adding actions/checkout. Root cause: interaction between setup-dotnet auth NuGet.config location, NuGet <clear/>, and Azure Artifacts token requirements.'
+---
+
+## Context / Motivation
+
+A pipeline that had reliably pushed packages to an Azure DevOps Artifacts feed (`dotnet nuget push`) began failing with **401 Unauthorized** immediately after adding a simple `actions/checkout@v5` step to the _push_ job. Nothing else about auth or secrets changed. This post documents the investigation, the subtle root cause, and workarounds.
+
+## High-Level Setup
+
+- Source hosted on **GitHub**.
+- Feed hosted in **Azure DevOps Artifacts**.
+- Repository includes a `NuGet.config` that follows secure supply chain guidance and explicitly uses `<clear/>` to avoid inheriting unexpected sources.
+- Two-job workflow:
+  1. Job 1: `dotnet pack` (produces `.nupkg` artifacts)
+  2. Job 2: (previously) only `setup-dotnet` + `dotnet nuget push`; now also includes `actions/checkout@v5` (triggering the failure)
+- Auth in Job 2 provided via `actions/setup-dotnet@v5` with `source-url` and `NUGET_AUTH_TOKEN` (a PAT stored in `AZURE_DEVOPS_PAT`).
+
+```yaml
+- name: Setup .NET
+  uses: actions/setup-dotnet@v5
+  with:
+    dotnet-version: '8.x'
+    source-url: https://pkgs.dev.azure.com/ORG/_packaging/FEED/nuget/v3/index.json
+  env:
+    NUGET_AUTH_TOKEN: ${{ secrets.AZURE_DEVOPS_PAT }}
+```
+
+## Expected Behavior (Matches Docs)
+
+Following official guidance should enable pushing packages:
+
+- GitHub Action auth pattern: https://github.com/actions/setup-dotnet?tab=readme-ov-file#azure-artifacts
+- Azure Artifacts + GitHub Actions quickstart: https://learn.microsoft.com/azure/devops/artifacts/quickstarts/github-actions?view=azure-devops&pivots=pat
+- Secure NuGet supply chain best practices (encourage explicit source definitions & clearing): https://learn.microsoft.com/nuget/concepts/security-best-practices
+- NuGet configuration behavior and inheritance: https://learn.microsoft.com/nuget/consume-packages/configuring-nuget-behavior
+- Detailed settings walkthrough (mentions search order): https://learn.microsoft.com/nuget/consume-packages/configuring-nuget-behavior#settings-walkthrough
+- Azure Artifacts push guidance (token expectations): https://learn.microsoft.com/azure/devops/artifacts/nuget/publish#publish-packages-using-dotnet-cli (and related docs)
+
+Nothing in those docs suggests that simply adding a checkout step to the push job would invalidate auth.
+
+## Actual Behavior
+
+After introducing:
+
+```yaml
+- uses: actions/checkout@v5
+```
+
+`dotnet nuget push` consistently fails with **401 Unauthorized** against the Azure Artifacts feed.
+
+## Reproduction Outline
+
+1. Create a repo with a `NuGet.config` containing `<clear/>` and a single Azure Artifacts source.
+2. Use a two-job GitHub Actions workflow: first job packs, second job pushes.
+3. In second job, call `actions/setup-dotnet` with `source-url` + `NUGET_AUTH_TOKEN` and push — observe success.
+4. Add `actions/checkout@v5` to the second job (before or after `setup-dotnet`).
+5. Rerun: push now fails with 401.
+
+## Root Cause (Interplay of Three Behaviors)
+
+1. **Where setup-dotnet writes auth config**: The action writes a temporary `nuget.config` _one directory above the repository root_ (see source around `authutil.ts`). That file injects the authenticated source using the provided token.
+2. **NuGet config loading order**: NuGet walks upward accumulating configuration unless a lower file uses `<clear/>`. (Docs: configuration search order / inheritance.)
+3. **Your repo's secure `NuGet.config`**: It includes `<clear/>` (good practice) to ensure only explicitly declared sources are trusted.
+
+When the second job _does not_ check out the repo, the repo-level `NuGet.config` (with `<clear/>`) is absent, so the parent (temp) config created by `setup-dotnet` is honored — auth works.
+
+When you _do_ add `actions/checkout`, the repository `NuGet.config` reappears. Its `<clear/>` directive erases the parent config entries, discarding the authenticated source that `setup-dotnet` just created. Result: push attempts an unauthenticated call = 401.
+
+## Why This Feels "Off"
+
+- Docs recommend `<clear/>` for supply chain hygiene.
+- Docs recommend using `setup-dotnet` with `source-url` for Azure Artifacts PAT auth.
+- The action silently places auth configuration in a location explicitly designed to be pruned by `<clear/>`.
+- Azure Artifacts NuGet push requires the credential stored in config (no simple `--api-key` style override for this scenario), so losing that config = auth failure.
+
+Individually reasonable choices; collectively brittle.
+
+## Workarounds / Mitigations
+
+### 1. Add the Source (With Credentials) Inside the Repo `NuGet.config`
+
+Pros: Explicit, survives `<clear/>`. Cons: Stores a token unless you use environment substitution (not always supported securely). Generally avoid committing secrets.
+
+### 2. Use `dotnet nuget add source` Post-Checkout (Recommended)
+
+After checkout (and before push), re-add the source programmatically so it's defined _after_ the clearing config.
+
+```yaml
+- name: Re-add authenticated source
+  run: |
+    dotnet nuget remove source artifact || true
+    dotnet nuget add source https://pkgs.dev.azure.com/ORG/_packaging/FEED/nuget/v3/index.json \
+      --name artifact \
+      --username azdo \
+      --password ${{ secrets.AZURE_DEVOPS_PAT }} \
+      --store-password-in-clear-text
+```
+
+(Yes, `--store-password-in-clear-text` is unfortunate, but needed for CLI credential persistence.)
+
+### 3. Merge Configs Manually
+
+Copy the parent temp config into the repo directory _after_ `setup-dotnet` runs but _before_ push, then append rather than clear. More fragile.
+
+### 4. Pack and Push in the Same Job Without Checkout in Push Job
+
+Eliminate the separate push job so the repo `NuGet.config` never suppresses the temp one. Loses some stage separation.
+
+### 5. Remove `<clear/>` (Not Recommended)
+
+Restores auth, but reintroduces implicit sources risk — undoing your supply chain posture.
+
+## Potential Upstream Improvements
+
+- `actions/setup-dotnet` could optionally inject the authenticated source into the _working directory_ (or provide a flag to choose location / merge strategy).
+- Documentation could warn that using `<clear/>` + multi-job workflows + `source-url` may discard injected auth.
+- Azure Artifacts could support a short-lived CLI API key or `--api-key` style ephemeral token so that losing config inheritance is less fatal.
+
+## Suggested Safer Pattern
+
+Do checkout first, then call `setup-dotnet`, then explicitly re-add (or confirm) the source _after_ the clearing config is present.
+
+```yaml
+- uses: actions/checkout@v5
+- uses: actions/setup-dotnet@v5
+  with:
+    dotnet-version: '8.x'
+- name: Auth source
+  run: |
+    dotnet nuget remove source artifact || true
+    dotnet nuget add source https://pkgs.dev.azure.com/ORG/_packaging/FEED/nuget/v3/index.json \
+      --name artifact \
+      --username azdo \
+      --password ${{ secrets.AZURE_DEVOPS_PAT }} \
+      --store-password-in-clear-text
+- name: Push package(s)
+  run: dotnet nuget push "**/*.nupkg" --source artifact --skip-duplicate
+```
+
+## Open Questions
+
+- Should `setup-dotnet` surface a clear warning when a downstream `<clear/>` will negate its injected config?
+- Is there appetite in NuGet for a more ergonomic ephemeral token flag that avoids writing secrets in plain text config?
+- Could Azure Artifacts align with generic API key patterns to reduce reliance on config-sourced credentials?
+
+## Takeaways
+
+If a previously working Azure Artifacts push suddenly yields 401 after adding a checkout or a repo `NuGet.config` with `<clear/>`, inspect where your authenticated source is defined. Ensure the last config NuGet loads _contains_ the source with credentials, or add it explicitly post-checkout.
+
+(Will update this post as upstream guidance evolves.)
