@@ -1,4 +1,5 @@
 import Link from './Link'
+import Image from './Image'
 import {
   Mail,
   Github,
@@ -38,9 +39,10 @@ interface LinkCardProps {
   description?: string
   href: string
   iconKind?: keyof typeof iconComponents
+  imageSrc?: string
 }
 
-const LinkCard = ({ title, description, href, iconKind }: LinkCardProps) => {
+const LinkCard = ({ title, description, href, iconKind, imageSrc }: LinkCardProps) => {
   const IconComponent = iconKind ? iconComponents[iconKind] : null
 
   return (
@@ -51,11 +53,21 @@ const LinkCard = ({ title, description, href, iconKind }: LinkCardProps) => {
       rel="noopener noreferrer"
     >
       <div className="flex items-center gap-4">
-        {IconComponent && (
+        {imageSrc ? (
+          <div className="flex-shrink-0">
+            <Image
+              src={imageSrc}
+              alt=""
+              width={24}
+              height={24}
+              className="h-6 w-6 object-contain"
+            />
+          </div>
+        ) : IconComponent ? (
           <div className="text-gray-700 dark:text-gray-200">
             <IconComponent className="h-6 w-6 fill-current" />
           </div>
-        )}
+        ) : null}
         <div className="flex-1">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
           {description && <p className="text-sm text-gray-500 dark:text-gray-400">{description}</p>}

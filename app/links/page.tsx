@@ -10,21 +10,21 @@ export const metadata = genPageMetadata({
 export default function LinksPage() {
   const links = [
     {
-      title: 'Email',
-      description: 'Get in touch via email',
-      href: `mailto:${siteMetadata.email}`,
-      iconKind: 'mail' as const,
+      title: '.NET Conf 2025 Feedback',
+      description: 'Share your thoughts on my presentation at .NET Conf 2025',
+      href: 'https://szfb.me/WZ4iJ',
+      imageSrc: '/static/images/dotnet-logo.png',
     },
     {
-      title: 'Website',
-      description: 'Visit my blog for articles and updates',
-      href: siteMetadata.siteUrl,
-      iconKind: 'globe' as const,
+      title: 'TRX to VS Playlist Github Action',
+      description: 'Automate TRX to VS Playlist conversion in your CI/CD pipeline',
+      href: 'https://github.com/marketplace/actions/trx-to-vs-playlist-converter',
+      iconKind: 'github' as const,
     },
     {
-      title: 'GitHub',
-      description: 'Check out my open source projects',
-      href: siteMetadata.github,
+      title: 'TRX to VS Playlist dotnet tool and library',
+      description: 'Convert TRX test result files to Visual Studio Playlist format',
+      href: 'https://github.com/BenjaminMichaelis/VS.TestPlaylistTools',
       iconKind: 'github' as const,
     },
     {
@@ -34,10 +34,34 @@ export default function LinksPage() {
       iconKind: 'linkedin' as const,
     },
     {
+      title: 'Twitter',
+      description: 'Follow me on Twitter for updates and insights',
+      href: siteMetadata.twitter,
+      iconKind: 'twitter' as const,
+    },
+    {
+      title: 'Website',
+      description: 'Visit my blog for articles and updates',
+      href: siteMetadata.siteUrl,
+      iconKind: 'globe' as const,
+    },
+    {
+      title: 'Email',
+      description: 'Get in touch via email',
+      href: `mailto:${siteMetadata.email}`,
+      iconKind: 'mail' as const,
+    },
+    {
       title: 'Essential C#',
       description: 'Your ultimate guide to mastering C# programming',
       href: 'https://essentialcsharp.com',
-      iconKind: 'csharp' as const,
+      imageSrc: '/static/images/EssentialCSharp.png',
+    },
+    {
+      title: 'GitHub',
+      description: 'Check out my open source projects',
+      href: siteMetadata.github,
+      iconKind: 'github' as const,
     },
   ].filter((link): link is typeof link & { href: string } => Boolean(link.href))
 
@@ -61,6 +85,7 @@ export default function LinksPage() {
                 description={link.description}
                 href={link.href}
                 iconKind={link.iconKind}
+                imageSrc={link.imageSrc}
               />
             ))}
           </div>

@@ -14,7 +14,7 @@ const siteMetadata = {
   email: 'site.contact@relay.benjamin.michaelis.net',
   github: 'https://github.com/BenjaminMichaelis',
   // x: 'https://twitter.com/x',
-  // twitter: 'https://twitter.com/Twitter',
+  twitter: 'https://x.com/benmichaelis',
   // facebook: 'https://facebook.com',
   // youtube: 'https://youtube.com',
   linkedin: 'https://www.linkedin.com/in/benjamin-michaelis/',
