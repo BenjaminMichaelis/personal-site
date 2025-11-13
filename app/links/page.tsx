@@ -12,7 +12,7 @@ export default function LinksPage() {
     {
       title: '.NET Conf 2025 Feedback',
       description: 'Share your thoughts on my presentation at .NET Conf 2025',
-      href: 'https://szfb.me/WZ4iJ',
+      href: 'https://szfb.me/WZ4i5J',
       imageSrc: '/static/images/dotnet-logo.png',
     },
     {
