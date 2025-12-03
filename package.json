@@ -84,5 +84,9 @@
       "prettier --write"
     ]
   },
+  "resolutions": {
+    "js-yaml": "^3.14.2",
+    "glob": "^10.5.0"
+  },
   "packageManager": "yarn@3.6.1"
 }
