@@ -10,28 +10,16 @@ export const metadata = genPageMetadata({
 export default function LinksPage() {
   const links = [
     {
-      title: '.NET Conf 2025 Feedback',
-      description: 'Share your thoughts on my presentation at .NET Conf 2025',
-      href: 'https://szfb.me/WZ4i5J',
-      imageSrc: '/static/images/dotnet-logo.png',
-    },
-    {
-      title: 'TRX to VS Playlist Github Action',
-      description: 'Automate TRX to VS Playlist conversion in your CI/CD pipeline',
-      href: 'https://github.com/marketplace/actions/trx-to-vs-playlist-converter',
-      iconKind: 'github' as const,
-    },
-    {
-      title: 'TRX to VS Playlist dotnet tool and library',
-      description: 'Convert TRX test result files to Visual Studio Playlist format',
-      href: 'https://github.com/BenjaminMichaelis/VS.TestPlaylistTools',
-      iconKind: 'github' as const,
-    },
-    {
       title: 'LinkedIn',
       description: 'Connect with me professionally',
       href: siteMetadata.linkedin,
       iconKind: 'linkedin' as const,
+    },
+    {
+      title: 'GitHub',
+      description: 'Check out my open source projects',
+      href: siteMetadata.github,
+      iconKind: 'github' as const,
     },
     {
       title: 'Twitter',
@@ -56,12 +44,6 @@ export default function LinksPage() {
       description: 'Your ultimate guide to mastering C# programming',
       href: 'https://essentialcsharp.com',
       imageSrc: '/static/images/EssentialCSharp.png',
-    },
-    {
-      title: 'GitHub',
-      description: 'Check out my open source projects',
-      href: siteMetadata.github,
-      iconKind: 'github' as const,
     },
   ].filter((link): link is typeof link & { href: string } => Boolean(link.href))
 
