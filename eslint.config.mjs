@@ -5,6 +5,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import js from '@eslint/js'
 import { FlatCompat } from '@eslint/eslintrc'
+import nextPlugin from '@next/eslint-plugin-next'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -14,20 +15,22 @@ const compat = new FlatCompat({
 
 export default [{
   ignores: ["node_modules/**", ".next/**", "out/**", "build/**", "next-env.d.ts"]
-}, {
-  ignores: [],
 }, js.configs.recommended, ...compat.extends(
   'plugin:@typescript-eslint/eslint-recommended',
   'plugin:@typescript-eslint/recommended',
   'plugin:jsx-a11y/recommended',
   'plugin:prettier/recommended',
-  'next',
-  'next/core-web-vitals'
 ), {
   plugins: {
     '@typescript-eslint': typescriptEslint,
+    '@next/next': nextPlugin,
   },
 
+  rules: {
+    ...nextPlugin.configs.recommended.rules,
+    ...nextPlugin.configs['core-web-vitals'].rules,
+  },
+}, {
   languageOptions: {
     globals: {
       ...globals.browser,
