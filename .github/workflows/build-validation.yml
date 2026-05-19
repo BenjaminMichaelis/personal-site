@@ -42,3 +42,27 @@ jobs:
         
       - name: Run full validation (main branch)
         run: yarn validate:full
+
+  dependabot-auto-merge:
+    name: Dependabot Auto-Approve and Auto-Merge
+    runs-on: ubuntu-latest
+    needs: validate
+    if: >
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.user.login == 'dependabot[bot]' &&
+      github.repository == 'BenjaminMichaelis/blog'
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Auto-approve Dependabot PR
+        run: gh pr review --approve "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Enable auto-merge for Dependabot PR
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
