@@ -4137,15 +4137,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/hast@npm:^2.0.0":
-  version: 2.3.10
-  resolution: "@types/hast@npm:2.3.10"
-  dependencies:
-    "@types/unist": ^2
-  checksum: 41531b7fbf590b02452996fc63272479c20a07269e370bd6514982cbcd1819b4b84d3ea620f2410d1b9541a23d08ce2eeb0a592145d05e00e249c3d56700d460
-  languageName: node
-  linkType: hard
-
 "@types/hast@npm:^3.0.0":
   version: 3.0.4
   resolution: "@types/hast@npm:3.0.4"
@@ -4252,7 +4243,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/unist@npm:^2, @types/unist@npm:^2.0.0":
+"@types/unist@npm:^2.0.0":
   version: 2.0.11
   resolution: "@types/unist@npm:2.0.11"
   checksum: 6d436e832bc35c6dde9f056ac515ebf2b3384a1d7f63679d12358766f9b313368077402e9c1126a14d827f10370a5485e628bf61aa91117cf4fc882423191a4e
@@ -7895,15 +7886,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hast-util-parse-selector@npm:^3.0.0":
-  version: 3.1.1
-  resolution: "hast-util-parse-selector@npm:3.1.1"
-  dependencies:
-    "@types/hast": ^2.0.0
-  checksum: 511d373465f60dd65e924f88bf0954085f4fb6e3a2b062a4b5ac43b93cbfd36a8dce6234b5d1e3e63499d936375687e83fc5da55628b22bd6b581b5ee167d1c4
-  languageName: node
-  linkType: hard
-
 "hast-util-parse-selector@npm:^4.0.0":
   version: 4.0.0
   resolution: "hast-util-parse-selector@npm:4.0.0"
@@ -8002,7 +7984,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hast-util-to-string@npm:^3.0.0":
+"hast-util-to-string@npm:^3.0.0, hast-util-to-string@npm:^3.0.1":
   version: 3.0.1
   resolution: "hast-util-to-string@npm:3.0.1"
   dependencies:
@@ -8029,19 +8011,6 @@ __metadata:
   dependencies:
     "@types/hast": ^3.0.0
   checksum: 41d93ccce218ba935dc3c12acdf586193c35069489c8c8f50c2aa824c00dec94a3c78b03d1db40fa75381942a189161922e4b7bca700b3a2cc779634c351a1e4
-  languageName: node
-  linkType: hard
-
-"hastscript@npm:^7.0.0":
-  version: 7.2.0
-  resolution: "hastscript@npm:7.2.0"
-  dependencies:
-    "@types/hast": ^2.0.0
-    comma-separated-tokens: ^2.0.0
-    hast-util-parse-selector: ^3.0.0
-    property-information: ^6.0.0
-    space-separated-tokens: ^2.0.0
-  checksum: 928a21576ff7b9a8c945e7940bcbf2d27f770edb4279d4d04b33dc90753e26ca35c1172d626f54afebd377b2afa32331e399feb3eb0f7b91a399dca5927078ae
   languageName: node
   linkType: hard
 
@@ -11058,13 +11027,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"property-information@npm:^6.0.0":
-  version: 6.5.0
-  resolution: "property-information@npm:6.5.0"
-  checksum: 6e55664e2f64083b715011e5bafaa1e694faf36986c235b0907e95d09259cc37c38382e3cc94a4c3f56366e05336443db12c8a0f0968a8c0a1b1416eebfc8f53
-  languageName: node
-  linkType: hard
-
 "property-information@npm:^7.0.0":
   version: 7.1.0
   resolution: "property-information@npm:7.1.0"
@@ -11301,15 +11263,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"refractor@npm:^4.8.0":
-  version: 4.9.0
-  resolution: "refractor@npm:4.9.0"
+"refractor@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "refractor@npm:5.0.0"
   dependencies:
-    "@types/hast": ^2.0.0
+    "@types/hast": ^3.0.0
     "@types/prismjs": ^1.0.0
-    hastscript: ^7.0.0
+    hastscript: ^9.0.0
     parse-entities: ^4.0.0
-  checksum: b1959733686ac2b9f2f23251b8de06297b06679552a625e8c8a8d6d2560814450061d7f2ebadad1e3d9ad3211ce56521f71107a81744d4f83de15f67f11039f6
+  checksum: 7581a1f7f45a5ed0d40fd4092a829fde3d085a9b0ef995c0018ecd7ef04ae9e2d4b9537e4037b848e8b596db9236f577ad155b46de60f2d0e1c80bd6b6a99728
   languageName: node
   linkType: hard
 
@@ -11604,7 +11566,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rehype-parse@npm:^9.0.0":
+"rehype-parse@npm:^9.0.1":
   version: 9.0.1
   resolution: "rehype-parse@npm:9.0.1"
   dependencies:
@@ -11647,17 +11609,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rehype-prism-plus@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "rehype-prism-plus@npm:2.0.1"
+"rehype-prism-plus@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "rehype-prism-plus@npm:2.0.2"
   dependencies:
-    hast-util-to-string: ^3.0.0
+    hast-util-to-string: ^3.0.1
     parse-numeric-range: ^1.3.0
-    refractor: ^4.8.0
-    rehype-parse: ^9.0.0
-    unist-util-filter: ^5.0.0
-    unist-util-visit: ^5.0.0
-  checksum: d68d65379e98867400420188c9ba7198975619f76f4991c389ebc65f2bd7efc62b2f85b1829057086b1080d2f5e421994b6ef855e97b8f2da146da5358562d3c
+    refractor: ^5.0.0
+    rehype-parse: ^9.0.1
+    unist-util-filter: ^5.0.1
+    unist-util-visit: ^5.1.0
+  checksum: 98ee9fad2a6356a9171fafc28254a31870eaa104d4d65d59f526aa370f4cbde190b7609fc01298125bf21e1b1b90fa21d5773b5549a1f41ce726a3e5120a8fe9
   languageName: node
   linkType: hard
 
@@ -12812,7 +12774,7 @@ __metadata:
     rehype-katex: ^7.0.1
     rehype-katex-notranslate: ^1.1.4
     rehype-preset-minify: 7.0.1
-    rehype-prism-plus: ^2.0.1
+    rehype-prism-plus: ^2.0.2
     rehype-slug: ^6.0.0
     remark: ^15.0.1
     remark-gfm: ^4.0.1
@@ -13211,7 +13173,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"unist-util-filter@npm:^5.0.0":
+"unist-util-filter@npm:^5.0.1":
   version: 5.0.1
   resolution: "unist-util-filter@npm:5.0.1"
   dependencies:
