@@ -12776,7 +12776,7 @@ __metadata:
     remark-math: ^6.0.0
     tailwindcss: ^4.3.3
     typescript: ^6.0.0
-    unist-util-visit: ^5.0.0
+    unist-util-visit: ^5.1.0
   languageName: unknown
   linkType: soft
 
