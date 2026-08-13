@@ -197,7 +197,8 @@ export default makeSource({
     ],
   },
   onSuccess: async (importData) => {
-    const { allBlogs } = await importData()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { allBlogs } = (await importData()) as any
     createTagCount(allBlogs)
     createSearchIndex(allBlogs)
   },
