@@ -3439,10 +3439,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pkgr/core@npm:^0.2.9":
-  version: 0.2.9
-  resolution: "@pkgr/core@npm:0.2.9"
-  checksum: bb2fb86977d63f836f8f5b09015d74e6af6488f7a411dcd2bfdca79d76b5a681a9112f41c45bdf88a9069f049718efc6f3900d7f1de66a2ec966068308ae517f
+"@pkgr/core@npm:^0.3.6":
+  version: 0.3.6
+  resolution: "@pkgr/core@npm:0.3.6"
+  checksum: 29082aa13d36f13fc41cdc64cb1feb36b630de0d6ebde84e2ff68e3d7a7f1dce4462cca91f76176c46e50bbca6b1e7f1fd9cf907af12d5d70da83bc981ca4ccf
   languageName: node
   linkType: hard
 
@@ -6890,12 +6890,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-prettier@npm:^5.5.4":
-  version: 5.5.4
-  resolution: "eslint-plugin-prettier@npm:5.5.4"
+"eslint-plugin-prettier@npm:^5.5.6":
+  version: 5.5.6
+  resolution: "eslint-plugin-prettier@npm:5.5.6"
   dependencies:
-    prettier-linter-helpers: ^1.0.0
-    synckit: ^0.11.7
+    prettier-linter-helpers: ^1.0.1
+    synckit: ^0.11.13
   peerDependencies:
     "@types/eslint": ">=8.0.0"
     eslint: ">=8.0.0"
@@ -6906,7 +6906,7 @@ __metadata:
       optional: true
     eslint-config-prettier:
       optional: true
-  checksum: 0dd05ed85018ab0e98da80325b7bd4c4ab6dd684398f1270a7c8cf4261df714dd4502ba4c7f85f651aade9989da0a7d2adda03af8873b73b52014141abf385de
+  checksum: 9e2d94d6631af110966733d19aea15699ef684b543de23d1812423b35a02203ac87ef2d8784f236950ecc4026828e98f00e7c2b41879ee9c974a0a0563f1c754
   languageName: node
   linkType: hard
 
@@ -10892,12 +10892,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier-linter-helpers@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "prettier-linter-helpers@npm:1.0.0"
+"prettier-linter-helpers@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "prettier-linter-helpers@npm:1.0.1"
   dependencies:
     fast-diff: ^1.1.2
-  checksum: 00ce8011cf6430158d27f9c92cfea0a7699405633f7f1d4a45f07e21bf78e99895911cbcdc3853db3a824201a7c745bd49bfea8abd5fb9883e765a90f74f8392
+  checksum: 2dc35f5036a35f4c4f5e645887edda1436acb63687a7f12b2383e0a6f3c1f76b8a0a4709fe4d82e19157210feb5984b159bb714d43290022911ab53d606474ec
   languageName: node
   linkType: hard
 
@@ -12701,12 +12701,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"synckit@npm:^0.11.7":
-  version: 0.11.11
-  resolution: "synckit@npm:0.11.11"
+"synckit@npm:^0.11.13":
+  version: 0.11.13
+  resolution: "synckit@npm:0.11.13"
   dependencies:
-    "@pkgr/core": ^0.2.9
-  checksum: bc896d4320525501495654766e6b0aa394e522476ea0547af603bdd9fd7e9b65dcd6e3a237bc7eb3ab7e196376712f228bf1bf6ed1e1809f4b32dc9baf7ad413
+    "@pkgr/core": ^0.3.6
+  checksum: ec989ed45f3df2e7eb3141f00060669fbc6cac5649846d0579f336cee4ab047c8bac65baa75b4df991e1c1bd224675b10efbe69af3596ead5180ec81a6d4ec06
   languageName: node
   linkType: hard
 
@@ -12743,7 +12743,7 @@ __metadata:
     eslint: ^10.8.1
     eslint-config-next: 16.3.0
     eslint-config-prettier: ^10.1.8
-    eslint-plugin-prettier: ^5.5.4
+    eslint-plugin-prettier: ^5.5.6
     github-slugger: ^2.0.0
     globals: ^17.4.0
     gray-matter: ^4.0.3
