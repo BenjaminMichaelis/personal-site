@@ -8274,12 +8274,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"image-size@npm:2.0.3":
-  version: 2.0.3
-  resolution: "image-size@npm:2.0.3"
+"image-size@npm:2.0.4":
+  version: 2.0.4
+  resolution: "image-size@npm:2.0.4"
   bin:
     image-size: bin/image-size.js
-  checksum: 2367928e16cebb913ce1cc8ec390fa994542755826454d6bc3e010fa3e40b3e7f53f506dac6d90475767ce8e0093cc6e39242174322817272e696e39551ba3b2
+  checksum: 172f6b6cca0937d2d70034366655c5af457dcdef62339e504f4030ed70f3992c53c001b6613dbf13f2938f698868dabfc634c77dd551ee7c329b69828d6fc6ef
   languageName: node
   linkType: hard
 
@@ -12862,7 +12862,7 @@ __metadata:
     gray-matter: ^4.0.3
     hast-util-from-html-isomorphic: ^2.0.0
     husky: ^9.1.7
-    image-size: 2.0.3
+    image-size: 2.0.4
     lint-staged: ^17.4.1
     markdown-link-check: ^3.15.0
     mdx-bundler: ^10.1.1
