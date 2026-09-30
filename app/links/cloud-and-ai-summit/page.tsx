@@ -2,37 +2,32 @@ import { genPageMetadata } from 'app/seo'
 import Link from '@/components/Link'
 
 export const metadata = genPageMetadata({
-  title: 'Boise Code Camp',
-  description: 'Links for Boise Code Camp talks by Benjamin Michaelis and Mark Michaelis',
+  title: 'Cloud & AI Summit',
+  description: 'Links for Benjamin Michaelis’s talks at Cloud & AI Summit',
 })
 
 const talks = [
   {
-    title: 'Future Of Software Engineering',
-    description: 'Benjamin Michaelis & Mark Michaelis',
-    href: '/links/boise-code-camp/future-of-software-engineering',
-  },
-  {
-    title: 'Mastering the Agentic Coding Workflow',
-    description: 'Benjamin Michaelis & Mark Michaelis',
-    href: '/links/boise-code-camp/mastering-the-agentic-coding-workflow',
-  },
-  {
-    title: 'Building Custom MCP Servers in .NET',
+    title: 'AI Agents in GitHub Actions: Automate Beyond YAML',
     description: 'Benjamin Michaelis',
-    href: '/links/boise-code-camp/building-custom-mcp-servers-in-dotnet',
+    href: '/links/cloud-and-ai-summit/ai-agents-in-github-actions',
+  },
+  {
+    title: 'Master the Machine: Orchestrating GitHub Copilot Agents, MCP, and Hooks',
+    description: 'Benjamin Michaelis',
+    href: '/links/cloud-and-ai-summit/master-the-machine',
   },
 ]
 
-export default function BoiseCodeCampPage() {
+export default function CloudAndAiSummitPage() {
   return (
     <div className="divide-y divide-gray-200 dark:divide-gray-700">
       <div className="space-y-2 pt-6 pb-8 md:space-y-5">
         <h1 className="text-3xl leading-9 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14 dark:text-gray-100">
-          Boise Code Camp
+          Cloud &amp; AI Summit
         </h1>
         <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">
-          Links for all talks — select a session to connect with the speakers
+          Links for my talks — select a session to get the resources and connect with me
         </p>
       </div>
       <div className="container py-12">

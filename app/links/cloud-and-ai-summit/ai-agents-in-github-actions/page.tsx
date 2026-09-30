@@ -3,21 +3,21 @@ import LinkCard from '@/components/LinkCard'
 import Link from '@/components/Link'
 
 export const metadata = genPageMetadata({
-  title: 'Building Custom MCP Servers in .NET - Boise Code Camp',
-  description: 'Resources and links from Benjamin Michaelis\u2019s talk at Boise Code Camp',
+  title: 'AI Agents in GitHub Actions: Automate Beyond YAML - Cloud & AI Summit',
+  description: 'Resources and links from Benjamin Michaelis’s talk at Cloud & AI Summit',
 })
 
 const links = [
   {
     title: 'Demo Code',
     description: 'Browse the demo code from this talk on GitHub',
-    href: 'https://github.com/BenjaminMichaelis/mcp-server-dotnet-az-functions',
+    href: 'https://github.com/BenjaminMichaelis/agentic-workflows-introduction',
     iconKind: 'github' as const,
   },
   {
     title: 'Session Feedback',
-    description: 'Share your feedback on this talk \u2014 it really helps!',
-    href: 'https://sfeedback.com/Co4Y7e',
+    description: 'Share your feedback on this talk — it really helps!',
+    href: 'https://www.cloudandaisummit.com/content/sessionfeedback/1174409',
     iconKind: 'globe' as const,
   },
   {
@@ -52,17 +52,20 @@ const links = [
   },
 ]
 
-export default function BuildingCustomMcpServersPage() {
+export default function AiAgentsInGitHubActionsPage() {
   return (
     <div className="divide-y divide-gray-200 dark:divide-gray-700">
       <div className="space-y-2 pt-6 pb-8 md:space-y-5">
         <h1 className="text-3xl leading-9 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14 dark:text-gray-100">
-          Building Custom MCP Servers in .NET
+          AI Agents in GitHub Actions: Automate Beyond YAML
         </h1>
         <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">
           Connect with Benjamin Michaelis &mdash;{' '}
-          <Link href="/links/boise-code-camp" className="text-primary-500 hover:text-primary-600">
-            Boise Code Camp
+          <Link
+            href="/links/cloud-and-ai-summit"
+            className="text-primary-500 hover:text-primary-600"
+          >
+            Cloud &amp; AI Summit
           </Link>
         </p>
       </div>
